@@ -1,11 +1,18 @@
-import React from 'react';
+import React from "react";
+import "./index.scss";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import HomePage from "./controllers/HomePage";
+import DetailsPage from "./controllers/DetailsPage";
 
-function App() {
+const AppRouter = () => {
   return (
-    <div className="App">
-      
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route index element={<HomePage />} />
+        <Route path="/movie/:title" element={<DetailsPage />} />
+      </Routes>
+    </BrowserRouter>
   );
-}
+};
 
-export default App;
+export default AppRouter;

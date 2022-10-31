@@ -6,7 +6,7 @@ export const axiosCall = async (
   method: string,
   data?: object | []
 ) => {
-  let token = getCookie("token");
+  let token = getCookie();
   let returnedData = [];
   let options = {
     method: method,
@@ -37,7 +37,7 @@ export const axiosCall = async (
 };
 
 export const checkLoggedUser = () => {
-  let token = getCookie("token");
+  let token = getCookie();
   let userId = getUserId();
 
   return token && userId ? true : false;

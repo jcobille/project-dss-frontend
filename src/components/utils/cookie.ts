@@ -13,8 +13,9 @@ export const setCookie = (
     (expiredays === null ? "" : ";expires=" + exdate.toUTCString());
 };
 
-export const getCookie = (cookieName: string) => {
+export const getCookie = () => {
   if (document.cookie.length > 0) {
+    let cookieName = "token";
     let c_start = document.cookie.indexOf(cookieName + "=");
     if (c_start !== -1) {
       c_start = c_start + cookieName.length + 1;

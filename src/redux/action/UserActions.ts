@@ -49,14 +49,14 @@ export const startCreateUser = (userData: {
 
 export const startAuthUser = (user: { email: string; password: string }) => {
   return (dispatch: Dispatch<AppActions>, getState: () => AppState) => {
-    axiosCall("/users/login", "POST", user).then((res) => {
+    axiosCall("/signin", "POST", user).then(async (res) => {
       if (res.status) {
+        
         let token = res.data.token;
-        let user = res.data.user;
-
-        setCookie("token", token, 7);
-        localStorage.setItem("userId", user.id);
-        dispatch(authUser(user));
+        let user = await axiosCall("/whoami","GET");
+        // setCookie("token", token, 7);
+        // dispatch(authUser(user));
+        return user;
       }
     });
   };
@@ -64,13 +64,11 @@ export const startAuthUser = (user: { email: string; password: string }) => {
 
 export const startSetCurrentAuthUser = () => {
   return (dispatch: Dispatch<AppActions>, getState: () => AppState) => {
-    const userId = getUserId();
-    axiosCall(`/users/details/${userId}`, "GET").then((res) => {
+    axiosCall(`/whoami`, "GET").then((res) => {
       let user = {
-        id: res.data._id,
+        id: res.data.id,
         ...res.data,
       };
-      delete user._id;
       dispatch(authUser(user));
     });
   };

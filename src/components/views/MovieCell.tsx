@@ -2,19 +2,21 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlay } from "@fortawesome/free-solid-svg-icons";
 import { Movie } from "../../redux/types/ActionTypes";
 import { getYear } from "../utils/misc";
+import { useNavigate } from "react-router-dom";
 
 interface MovieCellProps {
   data: Movie;
 }
 
 const MovieCell = ({ data }: MovieCellProps) => {
-  const openMovieDetails = (title: string) => {
-    console.log(title);
+  const navigate = useNavigate();
+  const openMovieDetails = (id: string) => {
+    navigate(`/movie/details/${id}`);
   }
 
   return (
     <div className="container">
-      <div className="img-container text-center" onClick={() => openMovieDetails(data.title)}>
+      <div className="img-container text-center" onClick={() => openMovieDetails(data.id)}>
         <img className="img" alt="Avatar" src={data.image} />
         <div className="overlay">
           <button className="circle-button play-btn">

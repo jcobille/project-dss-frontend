@@ -16,3 +16,12 @@ export interface Movie {
     image: string;
   }];
 }
+
+export interface Review {
+  id: string;
+  userId: string;
+  reviewScore : number;
+  description: string;
+  status: boolean;
+  movieId: string;
+}

@@ -11,16 +11,19 @@ export interface Movie {
   released_date: Date;
   duration: number;
   image: string;
-  actors?: [{
-    name: string;
-    image: string;
-  }];
+  actors?: [
+    {
+      name: string;
+      image: string;
+    }
+  ];
+  reviews?: Review[];
 }
 
 export interface Review {
   id: string;
   userId: string;
-  reviewScore : number;
+  reviewScore: number;
   description: string;
   status: boolean;
   movieId: string;

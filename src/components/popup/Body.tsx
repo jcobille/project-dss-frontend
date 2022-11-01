@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { startAuthUser } from "../../redux/action/UserActions";
-import { useAppDispatch } from "../../store/hooks";
+// import { startAuthUser } from "../../redux/action/UserActions";
+import { loginUser } from "../features/userSlice";
+import { useAppDispatch } from "../store/hooks";
 import { emailChecker } from "../utils/misc";
 import CustomInput from "../views/CustomInput";
 
@@ -55,7 +56,7 @@ const Body = ({ type, changeModal, isConfirm, handleChanges }: BodyProps) => {
         setError("Email is invalid");
         return;
       }
-      // dispatch(startAuthUser(formData));
+      dispatch(loginUser(formData));
     }
   };
 

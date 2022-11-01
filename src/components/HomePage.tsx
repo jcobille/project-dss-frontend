@@ -2,16 +2,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import NavTabs from "./views/NavTabs";
 import { useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "../store/hooks";
-import { startSetMovies } from "../redux/action/MovieActions";
+import { useAppDispatch, useAppSelector } from "./store/hooks";
 import MovieContainer from "./views/MovieContainer";
+import { getMovies } from "./features/movieSlice";
 export interface HomePageProps {}
 const HomePage = () => {
   const dispatch = useAppDispatch();
-  const movieList = useAppSelector((state) => state.movieList);
-
+  const movieList = useAppSelector(({ movieList }) => movieList.movies);
   useEffect(() => {
-    dispatch(startSetMovies());
+    dispatch(getMovies(""));
   }, [dispatch]);
   return (
     <section>

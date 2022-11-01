@@ -2,30 +2,43 @@ import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { startGetMovieDetails } from "../redux/action/MovieActions";
 import { Movie, Review } from "../redux/types/ActionTypes";
+import { getMovieDetails } from "./features/movieSlice";
+import { useAppDispatch, useAppSelector } from "./store/hooks";
 import { formatDate } from "./utils/misc";
 import NavTabs from "./views/NavTabs";
 
 const DetailsPage = () => {
   const { id } = useParams();
-  const [details, setDetails] = useState<Movie>();
   const [ratings, setRatings] = useState(0);
   const [reviews, setReviews] = useState<Review[]>([]);
-  useEffect(() => {
-    startGetMovieDetails(id).then((details) => {
-      setDetails(details);
+  const dispatch = useAppDispatch();
+  const details = useAppSelector<Movie>(
+    ({ movieList }) => movieList.details as Movie
+  );
 
-      let ratings = 0;
-      if (details.reviews) {
-        details.reviews.map((review: Review) => {
-          ratings += review.reviewScore;
-        });
-        setRatings(ratings / details.reviews.length);
-        setReviews(details.reviews);
+  useEffect(() => {
+    if (id) {
+      if(Object.keys(details).length === 0 || details.id !== id){
+        dispatch(getMovieDetails(id));
       }
-    });
-  }, [id]);
+    }
+    if (Object.keys(details).length > 0) {
+      ratingsCount();
+    }
+  }, [id, details]);
+
+  const ratingsCount = () => {
+    let ratings = 0;
+    if (details.reviews) {
+      details.reviews.forEach((review: Review) => {
+        ratings += review.reviewScore;
+      });
+
+      setRatings(ratings / details.reviews.length);
+      setReviews(details.reviews);
+    }
+  };
   return (
     <section>
       <NavTabs />
@@ -72,7 +85,7 @@ const DetailsPage = () => {
                     {details?.actors?.map((actor, index) => {
                       if (details.actors) {
                         return (
-                          <span key={index} className="test">
+                          <span key={index} className="btn-user">
                             {actor.name}
                             {index < details.actors.length - 1 ? ", " : ""}
                           </span>

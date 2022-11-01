@@ -5,14 +5,13 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import CustomInput from "./CustomInput";
 import { getCookie } from "../utils/cookie";
-import { useAppDispatch, useAppSelector } from "../../store/hooks";
-import { startSetCurrentAuthUser } from "../../redux/action/UserActions";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { User } from "../../redux/types/ActionTypes";
 const NavTabs = () => {
   const location = useLocation();
   const userToken = getCookie();
   const dispatch = useAppDispatch();
-  const user = useAppSelector<User>((state) => state.currentUser);
+  const user = useAppSelector((state) => console.log(state));
   const [modal, setModal] = useState({
     type: "",
     isOpen: false,
@@ -34,7 +33,7 @@ const NavTabs = () => {
 
   useEffect(() => {
     if (userToken) {
-      dispatch(startSetCurrentAuthUser());
+      // dispatch(startSetCurrentAuthUser());
     }
   }, [userToken]);
   const changeHandler = () => {
@@ -70,7 +69,7 @@ const NavTabs = () => {
                 </button>
               ) : (
                 <button className="btn-login user ml-2">
-                  <span className="pr-2">{user.name}</span>
+                  {/* <span className="pr-2">{user.name}</span> */}
                   <FontAwesomeIcon icon={faCaretDown}/>
                 </button>
               )}

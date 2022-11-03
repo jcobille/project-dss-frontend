@@ -3,13 +3,23 @@ import "./index.scss";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import HomePage from "./components/HomePage";
 import DetailsPage from "./components/DetailsPage";
+import HeaderNavigation from "./Header";
+import ProtectedRoutes from "./ProtectedRoute";
+import { MovieList } from "./components/admin/MovieList";
+import { PageNotExist } from "./components/PageNotExist";
 
 const AppRouter = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route index element={<HomePage />} />
-        <Route path="/movie/details/:id" element={<DetailsPage />} />
+        <Route element={<HeaderNavigation />}>
+          <Route index element={<HomePage />} />
+          <Route path="/movie/details/:id" element={<DetailsPage />} />
+          <Route path="/" element={<ProtectedRoutes />}>
+            <Route path="/admin/movies" element={<MovieList />} />
+          </Route>
+          <Route path="*" element={<PageNotExist />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );

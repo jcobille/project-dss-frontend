@@ -1,10 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { User } from "../../redux/types/ActionTypes";
 import { axiosCall } from "../utils/api";
-
-type returnError = {
-  message: string;
-};
+import { setCookie } from "../utils/cookie";
 
 interface UserState {
   details: {};
@@ -21,18 +18,40 @@ const initialState: UserState = {
 export const createUser = createAsyncThunk<
   User,
   { name: string; email: string; password: string },
-  { rejectValue: returnError }
+  { rejectValue: string }
 >("user/create", async (payload, thunkAPI) => {
   const response = await axiosCall("/signup", "POST", payload);
+  if (!response.status) {
+    return thunkAPI.rejectWithValue(response.message);
+  }
+
   return response.data as User;
 });
 
 export const loginUser = createAsyncThunk<
   User,
   { email: string; password: string },
-  { rejectValue: returnError }
+  { rejectValue: string }
 >("user/login", async (payload, thunkAPI) => {
   const response = await axiosCall("/signin", "POST", payload);
+  if (!response.status) {
+    return thunkAPI.rejectWithValue(response.message);
+  }
+
+  setCookie("token", response.data.token, 7);
+  return response.data as User;
+});
+
+export const currentAuthUser = createAsyncThunk<
+  User,
+  undefined,
+  { rejectValue: string }
+>("user/details", async (payload, thunkAPI) => {
+  const response = await axiosCall("/whoami", "GET");
+
+  if (!response.status) {
+    return thunkAPI.rejectWithValue(response.message);
+  }
   return response.data as User;
 });
 
@@ -40,8 +59,9 @@ export const userSlice = createSlice({
   name: "movie",
   initialState,
   reducers: {
-    createUser(state: UserState) {},
-    authUser(state: UserState) {},
+    clearErrorMessage(state) {
+      state.error = "";
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(loginUser.pending, (state) => {
@@ -54,8 +74,7 @@ export const userSlice = createSlice({
     });
 
     builder.addCase(loginUser.rejected, (state, { payload }) => {
-      console.log("rejected", payload);
-      if (payload) state.error = payload.message;
+      if (payload) state.error = payload;
       state.status = "idle";
     });
 
@@ -69,10 +88,25 @@ export const userSlice = createSlice({
     });
 
     builder.addCase(createUser.rejected, (state, { payload }) => {
-      if (payload) state.error = payload.message;
+      if (payload) state.error = payload;
+      state.status = "idle";
+    });
+
+    builder.addCase(currentAuthUser.pending, (state) => {
+      state.status = "loading";
+      state.error = null;
+    });
+
+    builder.addCase(currentAuthUser.fulfilled, (state, { payload }) => {
+      state.details = payload;
+      state.status = "idle";
+    });
+
+    builder.addCase(currentAuthUser.rejected, (state, { payload }) => {
+      if (payload) state.error = payload;
       state.status = "idle";
     });
   },
 });
-
+export const { clearErrorMessage } = userSlice.actions;
 export default userSlice.reducer;

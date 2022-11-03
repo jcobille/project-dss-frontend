@@ -14,6 +14,7 @@ const MovieContainer = ({ data, limit }: MovieContainerProps) => {
           if (data[i]) {
             return <MovieCell key={i} data={data[i]} />;
           }
+          return <span key={i}></span>;
         })}
       </div>
     </div>

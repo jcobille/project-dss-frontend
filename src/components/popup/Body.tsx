@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react";
-// import { startAuthUser } from "../../redux/action/UserActions";
-import { loginUser } from "../features/userSlice";
+import {
+  loginUser,
+  clearErrorMessage,
+  createUser,
+} from "../features/userSlice";
 import { useAppDispatch } from "../store/hooks";
 import { emailChecker } from "../utils/misc";
-import CustomInput from "../views/CustomInput";
+import { CustomInput } from "../views/CustomInput";
 
 interface BodyProps {
   type: string;
-  isConfirm: () => void;
   changeModal: (type: string) => void;
-  handleChanges: (evt: React.ChangeEvent<HTMLInputElement>) => void;
+  closeModal: (type: string) => void;
 }
 
 interface LoginProps {
@@ -21,65 +23,111 @@ interface SignupProps {
   name: string;
   email: string;
   password: string;
+  confirmPassword: string;
 }
 
-const Body = ({ type, changeModal, isConfirm, handleChanges }: BodyProps) => {
+const Body = ({ type, changeModal, closeModal }: BodyProps) => {
   const dispatch = useAppDispatch();
-  let defaultData =
-    type === "login"
-      ? { email: "", password: "" }
-      : {
-          name: "",
-          email: "",
-          password: "",
-        };
 
-  const [formData, setFormData] = useState<LoginProps | SignupProps>(
-    defaultData
-  );
+  const [formLoginData, setFormLoginData] = useState<LoginProps>({
+    email: "",
+    password: "",
+  });
+  const [formRegisterData, setFormRegisterData] = useState<SignupProps>({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
   const [error, setError] = useState("");
-
   const changeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     let name = event.target.name;
     let value = event.target.value;
 
-    setFormData({ ...formData, [name]: value });
+    if (type === "login") {
+      setFormLoginData({ ...formLoginData, [name]: value });
+    } else {
+      setFormRegisterData({ ...formRegisterData, [name]: value });
+    }
   };
 
-  const submitHandler = (event: React.MouseEvent<HTMLButtonElement>) => {
-    if (formData.email === "") {
+  const submitLoginHandler = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    if (!formLoginData.email) {
       setError("Email is required");
-    } else if (!formData.password) {
+    } else if (!formLoginData.password) {
       setError("Password is required");
     } else {
-      if (!emailChecker(formData.email)) {
+      if (!emailChecker(formLoginData.email)) {
         setError("Email is invalid");
         return;
       }
-      dispatch(loginUser(formData));
+
+      dispatch(loginUser(formLoginData))
+        .unwrap()
+        .then((res) => {
+          closeModal(type);
+        })
+        .catch((error) => setError(error));
+    }
+  };
+
+  const submitRegisterHandler = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+    if (!formRegisterData.name) {
+      setError("Name is required");
+    } else if (!formRegisterData.email) {
+      setError("Email is required");
+    } else if (!formRegisterData.password) {
+      setError("Password is required");
+    } else {
+      if (!emailChecker(formRegisterData.email)) {
+        setError("Email is invalid");
+        return;
+      } else if (
+        formRegisterData.password !== formRegisterData.confirmPassword
+      ) {
+        setError("Password didn't match");
+        return;
+      }
+
+      let userDetails = {
+        name: formRegisterData.name,
+        email: formRegisterData.email,
+        password: formRegisterData.password,
+      };
+      dispatch(createUser(userDetails))
+        .unwrap()
+        .then((res) => {
+          closeModal(type);
+        })
+        .catch((error) => setError(error));
     }
   };
 
   useEffect(() => {
-    setFormData(defaultData);
-  }, [type]);
+    setError("");
+    dispatch(clearErrorMessage());
+  }, [type, dispatch]);
 
   if (type === "login") {
     return (
       <div>
-        <div className="modal-header">
+        <div className="custom-modal-header">
           <div className="title">Welcome Back!</div>
         </div>
 
-        <div className="modal-body">
-          <span>{error}</span>
+        <div className="custom-modal-body">
+          {error ? <div className="error text-center">{error}</div> : ""}
           <div className="form-input text-start">
             <label className="form-label">EMAIL</label>
             <CustomInput
               type="text"
               className="input"
               name="email"
-              value={formData?.email}
+              value={formLoginData?.email}
               changeHandler={changeHandler}
             />
 
@@ -89,7 +137,7 @@ const Body = ({ type, changeModal, isConfirm, handleChanges }: BodyProps) => {
                 type="password"
                 className="input"
                 name="password"
-                value={formData?.password}
+                value={formLoginData?.password}
                 changeHandler={changeHandler}
               />
             </div>
@@ -97,14 +145,14 @@ const Body = ({ type, changeModal, isConfirm, handleChanges }: BodyProps) => {
           <div className="form-input text-start">
             <button
               type="submit"
-              className="btn btn-login"
-              onClick={submitHandler}
+              className="custom-btn full-width-button"
+              onClick={submitLoginHandler}
             >
               Login
             </button>
           </div>
         </div>
-        <div className="modal-footer">
+        <div className="custom-modal-footer">
           Don't have an account?&nbsp;
           <button
             className="btn-link active"
@@ -118,11 +166,11 @@ const Body = ({ type, changeModal, isConfirm, handleChanges }: BodyProps) => {
   } else {
     return (
       <div>
-        <div className="modal-header">
+        <div className="custom-modal-header">
           <div className="title">Create an Account</div>
         </div>
-
-        <div className="modal-body">
+        <div className="custom-modal-body">
+          {error ? <div className="error text-center">{error}</div> : ""}
           <div className="form-input text-start">
             <div>
               <label className="form-label">YOUR NAME</label>
@@ -131,7 +179,7 @@ const Body = ({ type, changeModal, isConfirm, handleChanges }: BodyProps) => {
                 className="input"
                 name="name"
                 changeHandler={changeHandler}
-                value=""
+                value={formRegisterData.name}
               />
             </div>
 
@@ -142,7 +190,7 @@ const Body = ({ type, changeModal, isConfirm, handleChanges }: BodyProps) => {
                 className="input"
                 name="email"
                 changeHandler={changeHandler}
-                value={formData.email}
+                value={formRegisterData.email}
               />
             </div>
 
@@ -153,7 +201,7 @@ const Body = ({ type, changeModal, isConfirm, handleChanges }: BodyProps) => {
                 className="input"
                 name="password"
                 changeHandler={changeHandler}
-                value={formData.password}
+                value={formRegisterData.password}
               />
             </div>
 
@@ -163,18 +211,21 @@ const Body = ({ type, changeModal, isConfirm, handleChanges }: BodyProps) => {
                 type="password"
                 className="input"
                 changeHandler={changeHandler}
-                name=""
-                value=""
+                name="confirmPassword"
+                value={formRegisterData.confirmPassword}
               />
             </div>
           </div>
           <div className="form-input text-start">
-            <button className="btn btn-login" onClick={submitHandler}>
+            <button
+              className="custom-btn full-width-button"
+              onClick={submitRegisterHandler}
+            >
               Register
             </button>
           </div>
         </div>
-        <div className="modal-footer">
+        <div className="custom-modal-footer">
           Have an account?&nbsp;
           <button
             className="btn-link active"

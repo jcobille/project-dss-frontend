@@ -6,7 +6,6 @@ import { Movie, Review } from "../redux/types/ActionTypes";
 import { getMovieDetails } from "./features/movieSlice";
 import { useAppDispatch, useAppSelector } from "./store/hooks";
 import { formatDate } from "./utils/misc";
-import NavTabs from "./views/NavTabs";
 
 const DetailsPage = () => {
   const { id } = useParams();
@@ -19,14 +18,14 @@ const DetailsPage = () => {
 
   useEffect(() => {
     if (id) {
-      if(Object.keys(details).length === 0 || details.id !== id){
+      if (Object.keys(details).length === 0 || details.id !== id) {
         dispatch(getMovieDetails(id));
       }
     }
     if (Object.keys(details).length > 0) {
       ratingsCount();
     }
-  }, [id, details]);
+  }, [id, details, dispatch]);
 
   const ratingsCount = () => {
     let ratings = 0;
@@ -41,7 +40,6 @@ const DetailsPage = () => {
   };
   return (
     <section>
-      <NavTabs />
       <div className="section mt-3">
         <div className="section-container dark">
           <div className="row">

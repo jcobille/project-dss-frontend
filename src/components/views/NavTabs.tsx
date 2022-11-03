@@ -1,17 +1,26 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUserCircle,faCaretDown } from "@fortawesome/free-solid-svg-icons";
+import {
+  faUserCircle,
+  faCaretDown,
+  faRightFromBracket,
+  faUserSecret,
+} from "@fortawesome/free-solid-svg-icons";
 import Modal from "../popup/Modal";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import CustomInput from "./CustomInput";
+import { CustomInput } from "./CustomInput";
 import { getCookie } from "../utils/cookie";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { User } from "../../redux/types/ActionTypes";
+import { currentAuthUser } from "../features/userSlice";
 const NavTabs = () => {
   const location = useLocation();
   const userToken = getCookie();
   const dispatch = useAppDispatch();
-  const user = useAppSelector((state) => console.log(state));
+  const [dropdown, setDropdown] = useState(false);
+  const user = useAppSelector<User>(
+    (state) => state.currentUser.details as User
+  );
   const [modal, setModal] = useState({
     type: "",
     isOpen: false,
@@ -24,31 +33,32 @@ const NavTabs = () => {
     });
   };
 
-  const isConfirm = () => {
-    return [];
-  };
   const changeModal = (type: string) => {
     setModal({ ...modal, type: type });
   };
 
   useEffect(() => {
     if (userToken) {
-      // dispatch(startSetCurrentAuthUser());
+      dispatch(currentAuthUser());
     }
-  }, [userToken]);
+  }, [userToken, dispatch]);
   const changeHandler = () => {
     return;
   };
+
+  const userButtonHandle = () => {
+    setDropdown(!dropdown);
+  };
   return (
     <div>
-      <div className="navtab">
+      <div className={"navtab " + (location.pathname === "/" ? "home" : "")}>
         <div className="section p-4">
           <span className="align-left">MovieViewer</span>
           <div className="align-right">
             <div className="text-center">
               <CustomInput
                 type={"text"}
-                className={"search-input input-md"}
+                className={"search-input input-md mx-2"}
                 placeHolder={"Enter keywords..."}
                 hidden={location.pathname === "/"}
                 name={"search"}
@@ -57,21 +67,41 @@ const NavTabs = () => {
               />
               {!userToken ? (
                 <button
-                  className={
-                    "ml-3 " +
-                    (location.pathname === "/"
-                      ? "bordered-button btn-md"
-                      : "btn-link")
-                  }
+                  className="ml-3 bordered-button btn-md"
                   onClick={() => openCloseModal("login")}
                 >
                   <FontAwesomeIcon icon={faUserCircle} /> Member Login
                 </button>
               ) : (
-                <button className="btn-login user ml-2">
-                  {/* <span className="pr-2">{user.name}</span> */}
-                  <FontAwesomeIcon icon={faCaretDown}/>
-                </button>
+                <div className="dropdown">
+                  <button
+                    className="full-width-button user ml-2"
+                    onClick={userButtonHandle}
+                  >
+                    <span className="pr-2">{user.name}</span>
+                    <FontAwesomeIcon icon={faCaretDown} />
+                  </button>
+                  <div
+                    className={"dropdown-content " + (dropdown ? "show" : "")}
+                  >
+                    {user.role === "admin" ? (
+                      <a href="/admin/dashboard">
+                        <FontAwesomeIcon icon={faUserSecret} size="sm" />
+                        <span> Admin Page</span>
+                      </a>
+                    ) : (
+                      ""
+                    )}
+                    <a href="/profile">
+                      <FontAwesomeIcon icon={faUserCircle} size="sm" />
+                      <span> Profile</span>
+                    </a>
+                    <a href="/logout">
+                      <FontAwesomeIcon icon={faRightFromBracket} size="sm" />
+                      <span> Logout</span>
+                    </a>
+                  </div>
+                </div>
               )}
             </div>
           </div>
@@ -80,8 +110,6 @@ const NavTabs = () => {
       <Modal
         modal={modal}
         closeModal={openCloseModal}
-        isConfirm={isConfirm}
-        handleChanges={changeHandler}
         changeModal={changeModal}
       />
     </div>

@@ -29,10 +29,6 @@ export const axiosCall = async (
   let request = await axios(options);
   returnedData = request.data;
 
-  if (!request.data.status) {
-    alert(request.data.message);
-  }
-
   return returnedData;
 };
 

@@ -5,12 +5,30 @@ body {
     background-color: #1f232c;
 }
 
+::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: #1f232c;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #f04f24;
+}
+
 .full-section {
     font-size: 1rem;
     font-weight: 1.5;
     line-height: 1.5;
-    color: #292b2c;
-    background-color: #fff;
+    color: white;
     padding-top: 20px;
     margin-left: 5px;
     margin-right: 5px;
@@ -21,12 +39,11 @@ body {
     color: white;
     max-width: 1450px;
     margin: 0 auto;
-}
 
-.header {
-    max-width: 1450px;
-    margin: 0 auto;
-    padding: 10px 50px;
+    & .content {
+        position: relative;
+        top: -90px;
+    }
 }
 
 .wrapper {
@@ -86,24 +103,21 @@ body {
 .table {
     width: 100%;
     display: table;
-    border: 2px solid;
-    border-radius: 5px;
     margin-bottom: 20px;
+    table-layout: fixed;
 
     & .table-header {
         display: table-header-group;
-        background-color: #BFBFBF;
-        font-weight: bold;
 
         & .th-cell {
             display: table-cell;
             padding: 5px;
             text-align: justify;
-        }
-
-        & .th-cell:nth-child(even) {
-            border-left: 2px solid;
-            border-right: 2px solid;
+            border-bottom: 1px solid #2B2C35;
+            font-size: 12px;
+            color: #424A59;
+            font-weight: bold;
+            text-transform: uppercase;
         }
     }
 
@@ -116,24 +130,13 @@ body {
             & .table-cell {
                 display: table-cell;
                 padding: 5px;
+                border-bottom: 1px solid #2B2C35;
+                width: 20%;
             }
 
             & .table-cell:empty::after {
                 content: "\00a0";
             }
-
-            & .table-cell:nth-child(even) {
-                border-left: 2px solid;
-                border-right: 2px solid;
-            }
-        }
-
-        & .table-row:nth-child(odd) {
-            background-color: #f2f2f2;
-        }
-
-        & .table-row:nth-child(even) {
-            background-color: #fff;
         }
     }
 }
@@ -141,8 +144,13 @@ body {
 .navtab {
     padding: 0px;
     margin: 0px;
-    height: 70px;
     background-color: #2B3342;
+    min-height: 70px;
+}
+
+.navtab.home {
+    height: 150px;
+    background-image: linear-gradient(180deg, #2B3342, #2B3342, #2B3342, #1f232c);
 }
 
 .navBtn {
@@ -160,6 +168,10 @@ body {
 
 .align-right {
     float: right;
+}
+
+.align-center {
+    float: center;
 }
 
 .active {
@@ -243,6 +255,10 @@ body {
     justify-content: center;
 }
 
+.centered {
+    text-align: center
+}
+
 .bordered-input {
     width: 100%;
     height: 25px;
@@ -273,14 +289,15 @@ body {
 .btn-float-end {
     float: right;
     position: relative;
-    background-color: #fff;
-    border: 2px solid;
+    background-color: #f04f24;
+    color: white;
+    border: none;
     border-radius: 5px;
     margin: 2px;
-    height: 30px;
-    width: 30px;
+    height: auto;
     cursor: pointer;
-    font-weight: 800
+    font-weight: 400;
+    padding: 10px;
 }
 
 .btn-float-close {
@@ -333,7 +350,7 @@ body {
     cursor: pointer;
 }
 
-.btn-none {
+.div-hidden {
     display: none;
 }
 
@@ -341,84 +358,6 @@ body {
     width: 100%;
     margin: 0;
     padding: 0;
-}
-
-.m-0 {
-    margin: 0px !important
-}
-
-.mt-1 {
-    margin-top: .25rem !important
-}
-
-.mt-2 {
-    margin-top: .5rem !important
-}
-
-.mt-3 {
-    margin-top: 1rem !important
-}
-
-.ml-1 {
-    margin-left: .25rem !important
-}
-
-.ml-2 {
-    margin-left: .5rem !important
-}
-
-.ml-3 {
-    margin-left: 1rem !important
-}
-
-.p-0 {
-    padding: 0px !important
-}
-
-.p-1 {
-    padding: .25rem !important
-}
-
-.pl-1 {
-    padding-left: .25rem !important
-}
-
-.p-2 {
-    padding: .5rem !important
-}
-.pr-2 {
-    padding-right: .5rem !important;
-}
-.pl-2 {
-    padding-left: .5rem !important;
-}
-
-.p-3 {
-    padding: 1rem !important
-}
-
-.pr-3 {
-    padding-right: .5rem !important;
-}
-
-.pt-3 {
-    padding-top: .5rem !important;
-}
-
-.p-4 {
-    padding: 1.5rem !important
-}
-
-.pt-4 {
-    padding-top: 1.5rem !important
-}
-
-.p-5 {
-    padding: 3rem !important
-}
-
-.pt-5 {
-    padding-top: 3rem !important
 }
 
 .btn-link {
@@ -453,7 +392,7 @@ body {
     cursor: not-allowed;
 }
 
-.modal {
+.custom-modal {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -466,21 +405,21 @@ body {
     min-width: 300px;
     color: white;
 
-    .modal-header {
+    .custom-modal-header {
         padding-top: 10px;
         text-align: center;
         font-size: 16px;
         margin-top: 10px;
     }
 
-    .modal-body {
+    .custom-modal-body {
         padding-left: 40px;
         padding-right: 40px;
         text-align: center;
         min-height: 110px;
     }
 
-    .modal-footer {
+    .custom-modal-footer {
         padding: 10px;
         padding-left: 40px;
         padding-right: 40px;
@@ -494,7 +433,7 @@ body {
     }
 }
 
-.modal-md {
+.custom-modal-md {
     min-width: 500px;
 }
 
@@ -583,13 +522,13 @@ select {
 }
 
 .input-lg {
-    height: 4rem;
+    height: 4.1rem;
     width: 95%;
     font-size: 20px;
 }
 
 .input-md {
-    height: 2rem;
+    height: 1.9rem;
     font-size: 14px;
     width: 10rem;
 }
@@ -608,14 +547,30 @@ select {
     cursor: pointer;
 }
 
-.btn {
-    min-height: 30px;
+.btn-circle {
+    border: none;
+    border-radius: 10px;
+    color: white;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.default {
+    background-color: #ee4e24;
+}
+
+.delete {
+    background-color: red;
+}
+
+.custom-btn {
+    min-height: 40px;
     border: none;
     cursor: pointer;
     border-radius: 2px;
 }
 
-.btn-login {
+.full-width-button {
     font-size: 16px;
     height: 30px;
     width: 100%;
@@ -624,13 +579,20 @@ select {
     border: none;
 }
 
-.btn-login.user {
+.full-width-button.user {
     border-radius: 50px;
     padding: 0px 20px;
 }
 
 .section-container {
-    padding: 20px;
+    padding: 40px 50px;
+
+    & .header {
+        max-width: 1450px;
+        margin: 0 auto;
+    }
+
+    & .body {}
 }
 
 .container {
@@ -696,4 +658,117 @@ select {
 .btn-user:hover {
     cursor: pointer;
     color: #f04f24;
+}
+
+.error {
+    background-color: #f04f24;
+    border-radius: 10px;
+    height: 50px;
+}
+
+.dropdown {
+    float: left;
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f1f1f1;
+    min-width: 140px;
+    overflow: auto;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    top: 55px;
+    right: 0;
+    z-index: 1;
+    border-radius: 3px;
+
+    & a {
+        color: black;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+    }
+}
+
+.dropdown-content-hover {
+    display: none;
+    position: absolute;
+    background-color: #1f232c;
+    min-width: 300px;
+    overflow: auto;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    top: -120px;
+    left: 80px;
+    z-index: 99999;
+    color: #C1C6CF;
+
+    & .head {
+        margin: 15px;
+        color: white;
+
+        & .title {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        & .sub {
+            font-size: 12px;
+        }
+    }
+
+    & .body {
+        font-size: 12px;
+        margin: 15px;
+    }
+
+    & .footer:hover {
+        background-color: #FF5A2E;
+    }
+}
+
+.footer {
+    background-color: #f04f24;
+    min-height: 40px;
+    color: white;
+    cursor: pointer;
+    -moz-transition: all .1s ease-in;
+    -o-transition: all .1s ease-in;
+    -webkit-transition: all .1s ease-in;
+    transition: all .1s ease-in;
+}
+
+.show {
+    display: block;
+}
+
+.custom-text {
+    font-family: cursive;
+
+    & .large {
+        font-size: 70px;
+    }
+
+    & .small {
+        font-size: 30px;
+    }
+}
+
+.nav-link {
+    color: white;
+}
+
+.nav-item>a:hover {
+    color: #f04f24;
+}
+
+/*code to change background color*/
+a.nav-link.active {
+    background-color: #f04f24 !important;
+}
+
+textarea {
+    min-height: 160px;
+    resize: none;
 }

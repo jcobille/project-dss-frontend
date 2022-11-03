@@ -26,15 +26,26 @@ export const createMovie = createAsyncThunk<
   { rejectValue: returnError }
 >("movie/create", async (payload, thunkAPI) => {
   const response = await axiosCall("/movie", "POST", payload);
+  if (!response.status) {
+    return thunkAPI.rejectWithValue({
+      message: response.message,
+    });
+  }
   return response.data as Movie[];
 });
 
 export const getMovies = createAsyncThunk<
   Movie[],
-  string,
+  undefined,
   { rejectValue: returnError }
->("movies/fetch", async () => {
+>("movies/fetch", async (state, thunkAPI) => {
   const response = await axiosCall("/movies", "GET");
+  if (!response.status) {
+    return thunkAPI.rejectWithValue({
+      message: response.message,
+    });
+  }
+
   return response.data as Movie[];
 });
 
@@ -46,7 +57,7 @@ export const getMovieDetails = createAsyncThunk<
   const response = await axiosCall(`/movie/${id}`, "GET");
   if (!response.status) {
     return thunkAPI.rejectWithValue({
-      message: "Failed to fetch movie details.",
+      message: response.message,
     });
   }
   return response.data as Movie;

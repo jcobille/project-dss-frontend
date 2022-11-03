@@ -2,7 +2,7 @@ const padTo2Digits = (num: number) => {
   return num.toString().padStart(2, "0");
 };
 
-export const formatDate = (datetime?: Date) => {
+export const formatDate = (datetime?: string) => {
   let date = datetime ? new Date(datetime) : new Date();
   return [
     date.getFullYear(),
@@ -11,7 +11,7 @@ export const formatDate = (datetime?: Date) => {
   ].join("-");
 };
 
-export const getYear = (time: Date) => {
+export const getYear = (time: string) => {
   let date = time ? new Date(time) : new Date();
   return date.getFullYear();
 };

@@ -1,8 +1,9 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlay } from "@fortawesome/free-solid-svg-icons";
+import { faPlay, faPlayCircle } from "@fortawesome/free-solid-svg-icons";
 import { Movie } from "../../redux/types/ActionTypes";
 import { getYear } from "../utils/misc";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 interface MovieCellProps {
   data: Movie;
@@ -10,18 +11,42 @@ interface MovieCellProps {
 
 const MovieCell = ({ data }: MovieCellProps) => {
   const navigate = useNavigate();
+  const [dropdown, setDropdown] = useState(false);
   const openMovieDetails = (id: string) => {
     navigate(`/movie/details/${id}`);
-  }
-
+  };
   return (
     <div className="container">
-      <div className="img-container text-center" onClick={() => openMovieDetails(data.id)}>
-        <img className="img" alt="Avatar" src={data.image} />
-        <div className="overlay">
-          <button className="circle-button play-btn">
-            <FontAwesomeIcon icon={faPlay} size="xl" />
-          </button>
+      <div
+        onMouseEnter={() => setDropdown(true)}
+        onMouseLeave={() => setDropdown(false)}
+      >
+        <div
+          className="img-container"
+          onClick={() => openMovieDetails(data.id)}
+        >
+          <img className="img" alt="Avatar" src={data.image} />
+          <div className="overlay">
+            <button className="circle-button play-btn">
+              <FontAwesomeIcon icon={faPlay} size="xl" />
+            </button>
+          </div>
+        </div>
+        <div className="dropdown">
+          <div className={"dropdown-content-hover " + (dropdown ? "show" : "")}>
+            <div className="head">
+              <div className="title">{data.title}</div>
+              <div className="sub"><b>Released:</b> {getYear(data.released_date)}</div>
+            </div>
+            <div className="body">{data.description}</div>
+            <div
+              className="footer text-center"
+              onClick={() => openMovieDetails(data.id)}
+            >
+              <span className="pr-3">Watch</span>
+              <FontAwesomeIcon icon={faPlayCircle} size="sm" />
+            </div>
+          </div>
         </div>
       </div>
       <div className="sub-container">

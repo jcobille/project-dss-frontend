@@ -9,7 +9,7 @@ const ProtectedRoutes = () => {
   );
   const userCookie = getCookie();
   if (!userCookie) return <Navigate to="/" />;
-  if (userDetails.role && userDetails.role !== "admin")
+  if (userDetails.role && userDetails.role !== "Admin")
     return <Navigate to="/doesntexist" />;
   return <Outlet />;
 };

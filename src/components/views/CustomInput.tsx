@@ -1,4 +1,6 @@
-import { Actor } from "../../redux/types/ActionTypes";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Actor, Movie } from "../../redux/types/ActionTypes";
 
 interface CustomInputProps {
   type: string;
@@ -41,10 +43,26 @@ interface CustomAutocompleteProps {
   name: string;
   className: string;
   placeHolder?: string;
-  data?: Actor[];
+  data?: Actor[] | Movie[];
+  value?: string;
+  changeHandler?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  select?: (actor: Actor) => void;
+}
+
+interface CustomButtonProps {
+  dataId?: string;
+  icon: IconProp;
+  modalType: string;
+  className: string;
+  changeModal: (type: string, id: string) => void;
+}
+
+interface CustomRadioButtonProps {
+  data: string[];
+  name: string;
+  dataId?: string;
   value?: string;
   changeHandler: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  select: (actor: Actor) => void;
 }
 
 const CustomInput = ({
@@ -144,8 +162,8 @@ const AutoComplete = ({
   select,
   value,
 }: CustomAutocompleteProps) => {
-  const handleClick = (data: Actor) => {
-    select(data);
+  const handleClick = (data: Actor | Movie) => {
+    // select(data);
   };
   return (
     <div className="autocomplete">
@@ -167,7 +185,7 @@ const AutoComplete = ({
                 className="text-start"
                 onClick={() => handleClick(val)}
               >
-                {`${val.firstName} ${val.lastName}`}
+                {/* {`${val.firstName} ${val.lastName}`} */}
               </div>
             );
           })
@@ -181,10 +199,57 @@ const AutoComplete = ({
   );
 };
 
+const CustomButton = ({
+  dataId = "",
+  icon,
+  modalType,
+  changeModal,
+  className,
+}: CustomButtonProps) => {
+  return (
+    <button
+      className={className}
+      onClick={() => changeModal(modalType, dataId)}
+    >
+      <FontAwesomeIcon icon={icon} />
+    </button>
+  );
+};
+
+const CustomRadioButton = ({
+  data,
+  name,
+  value,
+  dataId,
+  changeHandler,
+}: CustomRadioButtonProps) => {
+  return (
+    <div className="text-start">
+      {data.map((gender, i) => {
+        return (
+          <div className="form-check form-check-inline" key={i}>
+            <input
+              className="form-check-input"
+              type="radio"
+              name={name}
+              checked={gender === value}
+              value={gender}
+              onChange={changeHandler}
+            />
+            <label className="form-check-label">{gender}</label>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
 export {
   CustomInput,
   CustomTextArea,
   CustomSelect,
   CustomNumberInput,
   AutoComplete,
+  CustomButton,
+  CustomRadioButton,
 };

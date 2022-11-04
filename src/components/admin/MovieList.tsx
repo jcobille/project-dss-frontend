@@ -15,6 +15,7 @@ export const MovieList = () => {
     { title: "Released Date", key: "released_date" },
     { title: "", key: "id" },
   ];
+  const buttonModalTypes = ['editMovie','deleteMovie'];
   const [modal, setModal] = useState({
     id: "",
     type: "",
@@ -52,7 +53,7 @@ export const MovieList = () => {
         <div className="section-container dark">
           <div className="header">
             <div>
-              <span className="title">Movie List</span>
+              <span className="title">Movies Management</span>
               <button
                 className="btn-float-end"
                 onClick={() => openCloseModal("addMovie")}
@@ -69,6 +70,7 @@ export const MovieList = () => {
             minRow={15}
             tableType="movies"
             changeModal={changeModal}
+            buttonModalTypes={buttonModalTypes}
           />
         </div>
       </div>

@@ -1,18 +1,21 @@
 export interface User {
-  id: string;
+  id?: string;
   email: string;
-  name: string;
-  role: string;
+  firstName: string;
+  lastName: string;
+  role?: string;
+  isActive?: boolean;
+  password?: string;
 }
 
 export interface Actor {
-  id: string;
+  id?: string;
   firstName: string;
   lastName: string;
   age: string;
   gender: string;
   image: string;
-  moviesId: string[];
+  moviesId?: string[];
 }
 
 export interface Movie {

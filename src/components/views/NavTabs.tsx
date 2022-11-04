@@ -9,10 +9,10 @@ import Modal from "../popup/Modal";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { CustomInput } from "./CustomInput";
-import { getCookie, logout, setCookie } from "../utils/cookie";
+import { getCookie } from "../utils/cookie";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { User } from "../../redux/types/ActionTypes";
-import { currentAuthUser } from "../features/userSlice";
+import { currentAuthUser } from "../features/currentUserSlice";
 const NavTabs = () => {
   const location = useLocation();
   const userToken = getCookie();
@@ -39,9 +39,7 @@ const NavTabs = () => {
 
   useEffect(() => {
     if (userToken) {
-      dispatch(currentAuthUser()).then((res) => {
-        
-      });
+      dispatch(currentAuthUser()).then((res) => {});
     }
   }, [userToken, dispatch]);
   const changeHandler = () => {
@@ -79,7 +77,7 @@ const NavTabs = () => {
                     className="full-width-button user ml-2"
                     onClick={userButtonHandle}
                   >
-                    <span className="pr-2">{user.name}</span>
+                    <span className="pr-2">{user.firstName}</span>
                     <FontAwesomeIcon icon={faCaretDown} />
                   </button>
                   <div

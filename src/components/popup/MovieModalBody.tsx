@@ -30,7 +30,7 @@ export const MovieModalBody = ({
   type,
   changeModal,
   closeModal,
-  isOpen
+  isOpen,
 }: BodyProps) => {
   const [formData, setFormData] = useState<Movies>({
     title: "",
@@ -52,14 +52,15 @@ export const MovieModalBody = ({
   let title = "Create";
   if (type === "editMovie") {
     title = "Edit";
-  } else if (type == "deleteMovie") {
+  } else if (type === "deleteMovie") {
     title = "Delete";
   }
 
   const submitHandler = () => {
     let selectedActorsId: string[] = [];
     selectedActors.map((actor) => {
-      selectedActorsId.push(actor.id);
+      selectedActorsId.push(actor.id ?? "");
+      return;
     });
 
     if (type === "addMovie") {
@@ -88,6 +89,7 @@ export const MovieModalBody = ({
   };
 
   const handleAdd = (data: Movie) => {
+    setError("");
     if (!data.title) {
       setError("Title is empty");
       return;
@@ -118,6 +120,7 @@ export const MovieModalBody = ({
     closeModal(type);
   };
   const handleEdit = (data: MovieEdit) => {
+    setError("");
     if (!data.image) {
       setError("Image is empty");
       return;
@@ -177,7 +180,7 @@ export const MovieModalBody = ({
     } else {
       setActorList([]);
     }
-  }, [actors]);
+  }, [actors, setActorList, movies, dispatch]);
   useEffect(() => {
     let movie = movies.find((movie) => movie.id === movieId);
     if (movie) {
@@ -198,12 +201,12 @@ export const MovieModalBody = ({
         }
       >
         {error ? <div className="error text-center">{error}</div> : ""}
-        <div className="">
+        <div>
           <div
             className={"row my-1 " + (type === "addMovie" ? "" : "div-hidden")}
           >
             <div className="col-3 text-center">
-              <label className="">Movie Title</label>
+              <label>Movie Title</label>
             </div>
             <div className="col">
               <CustomInput
@@ -219,7 +222,7 @@ export const MovieModalBody = ({
             className={"row my-1 " + (type === "addMovie" ? "" : "div-hidden")}
           >
             <div className="col-3 text-center">
-              <label className="">Released Date</label>
+              <label>Released Date</label>
             </div>
             <div className="col">
               <CustomInput
@@ -236,7 +239,7 @@ export const MovieModalBody = ({
             className={"row my-1 " + (type === "addMovie" ? "" : "div-hidden")}
           >
             <div className="col-3 text-center">
-              <label className="">Duration</label>
+              <label>Duration</label>
             </div>
             <div className="col">
               <CustomNumberInput
@@ -251,7 +254,7 @@ export const MovieModalBody = ({
 
           <div className="row my-1">
             <div className="col-3 text-center">
-              <label className="">Image</label>
+              <label>Image</label>
             </div>
             <div className="col">
               <CustomInput
@@ -267,7 +270,7 @@ export const MovieModalBody = ({
 
           <div className="row my-1">
             <div className="col-3 text-center">
-              <label className="">Cost</label>
+              <label>Cost</label>
             </div>
             <div className="col">
               <CustomNumberInput
@@ -283,7 +286,7 @@ export const MovieModalBody = ({
             className={"row my-1 " + (type === "addMovie" ? "" : "div-hidden")}
           >
             <div className="col-3 text-center">
-              <label className="">Cast</label>
+              <label>Cast</label>
             </div>
             <div className="col">
               <div className="row">
@@ -311,7 +314,7 @@ export const MovieModalBody = ({
                     {`${actor.firstName} ${actor.lastName}`} &nbsp;
                     <span
                       className="pointer"
-                      onClick={() => removeActor(actor.id)}
+                      onClick={() => (actor ? removeActor(actor.id ?? "") : {})}
                     >
                       <FontAwesomeIcon className="ml-3" icon={faClose} />
                     </span>
@@ -323,7 +326,7 @@ export const MovieModalBody = ({
 
           <div className="row my-1">
             <div className="col-3">
-              <label className="">Description</label>
+              <label>Description</label>
             </div>
             <div className="col">
               <CustomTextArea

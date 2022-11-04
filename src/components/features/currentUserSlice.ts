@@ -17,7 +17,7 @@ const initialState: UserState = {
 
 export const createUser = createAsyncThunk<
   User,
-  { name: string; email: string; password: string },
+  User,
   { rejectValue: string }
 >("user/create", async (payload, thunkAPI) => {
   const response = await axiosCall("/signup", "POST", payload);
@@ -55,8 +55,8 @@ export const currentAuthUser = createAsyncThunk<
   return response.data as User;
 });
 
-export const userSlice = createSlice({
-  name: "movie",
+export const currentUserSlice = createSlice({
+  name: "currentUser",
   initialState,
   reducers: {
     clearErrorMessage(state) {
@@ -108,5 +108,5 @@ export const userSlice = createSlice({
     });
   },
 });
-export const { clearErrorMessage } = userSlice.actions;
-export default userSlice.reducer;
+export const { clearErrorMessage } = currentUserSlice.actions;
+export default currentUserSlice.reducer;

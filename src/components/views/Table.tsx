@@ -1,8 +1,8 @@
-import { Actor, Movie } from "../../redux/types/ActionTypes";
+import { Actor, Movie, User } from "../../redux/types/ActionTypes";
 import TableRow from "./Row";
 
 interface TableProps {
-  data: Movie[] | Actor[];
+  data: Movie[] | Actor[] | User[];
   headers: {
     title: string;
     key: string;
@@ -10,6 +10,7 @@ interface TableProps {
   minRow: number;
   tableType: string;
   changeModal: (type: string) => void;
+  buttonModalTypes: string[];
 }
 const Table = ({
   data,
@@ -17,6 +18,7 @@ const Table = ({
   tableType,
   minRow,
   changeModal,
+  buttonModalTypes
 }: TableProps) => {
   const length = data.length < minRow ? minRow : data.length;
 
@@ -45,9 +47,11 @@ const Table = ({
                   data={data[i]}
                   headers={headers}
                   changeModal={changeModal}
+                  buttonModalTypes={buttonModalTypes}
                 />
               );
             }
+            return;
           })}
         </tbody>
       </table>

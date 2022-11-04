@@ -4,6 +4,7 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import Body from "./Body";
 import { MovieModalBody } from "./MovieModalBody";
 import { ActorModalBody } from "./ActorModalBody";
+import { UserModalBody } from "./UserModalBody";
 
 Modal.setAppElement("#root");
 interface ModalProps {
@@ -46,12 +47,24 @@ const App = ({ modal, closeModal, changeModal }: ModalProps) => {
             isOpen={modal.isOpen}
           />
         )}
-        
+
         {(modal.type === "addActor" ||
           modal.type === "editActor" ||
           modal.type === "deleteActor") && (
           <ActorModalBody
-            movieId={modal.id}
+            actorId={modal.id}
+            type={modal.type}
+            changeModal={changeModal}
+            closeModal={closeModal}
+            isOpen={modal.isOpen}
+          />
+        )}
+
+        {(modal.type === "addUser" ||
+          modal.type === "editUser" ||
+          modal.type === "deleteUser") && (
+          <UserModalBody
+            userId={modal.id}
             type={modal.type}
             changeModal={changeModal}
             closeModal={closeModal}

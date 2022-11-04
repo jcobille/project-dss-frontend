@@ -15,20 +15,28 @@ export const ActorList = () => {
     { title: "Actor's Age", key: "age" },
     { title: "", key: "id" },
   ];
+
+  const buttonModalTypes = ["editActor", "deleteActor"];
   const [modal, setModal] = useState({
+    id: "",
     type: "",
     isOpen: false,
   });
 
   const openCloseModal = (type: string) => {
     setModal({
+      id: "",
       type: type,
       isOpen: !modal.isOpen,
     });
   };
 
-  const changeModal = (type: string) => {
-    setModal({ ...modal, type: type, isOpen: true });
+  const changeModal = (type: string, id?: string) => {
+    if (id) {
+      setModal({ ...modal, id: id, type: type, isOpen: true });
+    } else {
+      setModal({ ...modal, type: type, isOpen: true });
+    }
   };
 
   const ActorList = useAppSelector(
@@ -46,7 +54,7 @@ export const ActorList = () => {
         <div className="section-container dark">
           <div className="header">
             <div>
-              <span className="title">Actors List</span>
+              <span className="title">Actors Management</span>
               <button
                 className="btn-float-end"
                 onClick={() => openCloseModal("addActor")}
@@ -63,6 +71,7 @@ export const ActorList = () => {
             minRow={15}
             tableType="actors"
             changeModal={changeModal}
+            buttonModalTypes={buttonModalTypes}
           />
         </div>
       </div>

@@ -2,12 +2,14 @@ import { configureStore } from '@reduxjs/toolkit';
 import actorSlice from '../features/actorSlice';
 import movieSlice from '../features/movieSlice';
 import userSlice from '../features/userSlice';
+import currentUserSlice from '../features/currentUserSlice';
 
 export const store = configureStore({
   reducer: {
-    currentUser: userSlice,
+    currentUser: currentUserSlice,
     movieList: movieSlice,
-    actorList: actorSlice
+    actorList: actorSlice,
+    userList: userSlice
   },
 });
 

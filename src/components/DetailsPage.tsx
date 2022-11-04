@@ -84,7 +84,7 @@ const DetailsPage = () => {
                       if (details.actors) {
                         return (
                           <span key={index} className="btn-user">
-                            {actor.name}
+                            {`${actor.firstName} ${actor.lastName}`}
                             {index < details.actors.length - 1 ? ", " : ""}
                           </span>
                         );

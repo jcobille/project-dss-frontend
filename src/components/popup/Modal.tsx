@@ -3,10 +3,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import Body from "./Body";
 import { MovieModalBody } from "./MovieModalBody";
+import { ActorModalBody } from "./ActorModalBody";
 
 Modal.setAppElement("#root");
 interface ModalProps {
-  modal: { type: string; isOpen: boolean };
+  modal: { id?: string; type: string; isOpen: boolean };
   closeModal: (type: string) => void;
   changeModal: (type: string) => void;
 }
@@ -26,17 +27,35 @@ const App = ({ modal, closeModal, changeModal }: ModalProps) => {
         >
           <FontAwesomeIcon icon={faXmark} size="xl" />
         </button>
-        {modal.type === "login" || modal.type === "register" ? (
+        {(modal.type === "login" || modal.type === "register") && (
           <Body
             type={modal.type}
             changeModal={changeModal}
             closeModal={closeModal}
           />
-        ) : (
+        )}
+
+        {(modal.type === "addMovie" ||
+          modal.type === "editMovie" ||
+          modal.type === "deleteMovie") && (
           <MovieModalBody
+            movieId={modal.id}
             type={modal.type}
             changeModal={changeModal}
             closeModal={closeModal}
+            isOpen={modal.isOpen}
+          />
+        )}
+        
+        {(modal.type === "addActor" ||
+          modal.type === "editActor" ||
+          modal.type === "deleteActor") && (
+          <ActorModalBody
+            movieId={modal.id}
+            type={modal.type}
+            changeModal={changeModal}
+            closeModal={closeModal}
+            isOpen={modal.isOpen}
           />
         )}
       </Modal>

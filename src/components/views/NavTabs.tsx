@@ -9,7 +9,7 @@ import Modal from "../popup/Modal";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { CustomInput } from "./CustomInput";
-import { getCookie } from "../utils/cookie";
+import { getCookie, logout, setCookie } from "../utils/cookie";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { User } from "../../redux/types/ActionTypes";
 import { currentAuthUser } from "../features/userSlice";
@@ -39,7 +39,9 @@ const NavTabs = () => {
 
   useEffect(() => {
     if (userToken) {
-      dispatch(currentAuthUser());
+      dispatch(currentAuthUser()).then((res) => {
+        
+      });
     }
   }, [userToken, dispatch]);
   const changeHandler = () => {
@@ -63,7 +65,6 @@ const NavTabs = () => {
                 hidden={location.pathname === "/"}
                 name={"search"}
                 changeHandler={changeHandler}
-                value=""
               />
               {!userToken ? (
                 <button

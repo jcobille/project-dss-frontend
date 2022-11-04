@@ -12,18 +12,20 @@ interface MovieCellProps {
 const MovieCell = ({ data }: MovieCellProps) => {
   const navigate = useNavigate();
   const [dropdown, setDropdown] = useState(false);
-  const openMovieDetails = (id: string) => {
+  const openMovieDetails = (id = "") => {
     navigate(`/movie/details/${id}`);
   };
   return (
-    <div className="container">
+    <div className="div-container">
       <div
         onMouseEnter={() => setDropdown(true)}
         onMouseLeave={() => setDropdown(false)}
       >
         <div
           className="img-container"
-          onClick={() => openMovieDetails(data.id)}
+          onClick={() => {
+            openMovieDetails(data.id);
+          }}
         >
           <img className="img" alt="Avatar" src={data.image} />
           <div className="overlay">
@@ -36,7 +38,9 @@ const MovieCell = ({ data }: MovieCellProps) => {
           <div className={"dropdown-content-hover " + (dropdown ? "show" : "")}>
             <div className="head">
               <div className="title">{data.title}</div>
-              <div className="sub"><b>Released:</b> {getYear(data.released_date)}</div>
+              <div className="sub">
+                <b>Released:</b> {getYear(data.released_date)}
+              </div>
             </div>
             <div className="body">{data.description}</div>
             <div

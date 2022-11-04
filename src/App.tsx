@@ -7,6 +7,8 @@ import HeaderNavigation from "./Header";
 import ProtectedRoutes from "./ProtectedRoute";
 import { MovieList } from "./components/admin/MovieList";
 import { PageNotExist } from "./components/PageNotExist";
+import { ActorList } from "./components/admin/ActorList";
+import { UserList } from "./components/admin/UserList";
 
 const AppRouter = () => {
   return (
@@ -17,6 +19,8 @@ const AppRouter = () => {
           <Route path="/movie/details/:id" element={<DetailsPage />} />
           <Route path="/" element={<ProtectedRoutes />}>
             <Route path="/admin/movies" element={<MovieList />} />
+            <Route path="/admin/actors" element={<ActorList />} />
+            <Route path="/admin/users" element={<UserList />} />
           </Route>
           <Route path="*" element={<PageNotExist />} />
         </Route>

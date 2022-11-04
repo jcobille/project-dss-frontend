@@ -35,7 +35,7 @@ const HomePage = () => {
             </div>
           </div>
         </div>
-        <MovieContainer data={movieList} limit={16} />
+        <MovieContainer data={movieList} limit={32} />
       </div>
     </section>
   );

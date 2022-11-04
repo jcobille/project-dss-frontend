@@ -127,7 +127,6 @@ const Body = ({ type, changeModal, closeModal }: BodyProps) => {
               type="text"
               className="input"
               name="email"
-              value={formLoginData?.email}
               changeHandler={changeHandler}
             />
 
@@ -137,7 +136,6 @@ const Body = ({ type, changeModal, closeModal }: BodyProps) => {
                 type="password"
                 className="input"
                 name="password"
-                value={formLoginData?.password}
                 changeHandler={changeHandler}
               />
             </div>
@@ -179,7 +177,6 @@ const Body = ({ type, changeModal, closeModal }: BodyProps) => {
                 className="input"
                 name="name"
                 changeHandler={changeHandler}
-                value={formRegisterData.name}
               />
             </div>
 
@@ -190,7 +187,6 @@ const Body = ({ type, changeModal, closeModal }: BodyProps) => {
                 className="input"
                 name="email"
                 changeHandler={changeHandler}
-                value={formRegisterData.email}
               />
             </div>
 
@@ -201,7 +197,6 @@ const Body = ({ type, changeModal, closeModal }: BodyProps) => {
                 className="input"
                 name="password"
                 changeHandler={changeHandler}
-                value={formRegisterData.password}
               />
             </div>
 
@@ -212,7 +207,6 @@ const Body = ({ type, changeModal, closeModal }: BodyProps) => {
                 className="input"
                 changeHandler={changeHandler}
                 name="confirmPassword"
-                value={formRegisterData.confirmPassword}
               />
             </div>
           </div>

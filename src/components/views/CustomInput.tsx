@@ -1,6 +1,6 @@
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Actor, Movie } from "../../redux/types/ActionTypes";
+import { Actor, Movie, searchProps } from "../../redux/types/ActionTypes";
 
 interface CustomInputProps {
   type: string;
@@ -43,10 +43,10 @@ interface CustomAutocompleteProps {
   name: string;
   className: string;
   placeHolder?: string;
-  data?: Actor[] | Movie[];
+  data?: searchProps[];
   value?: string;
   changeHandler?: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  select?: (actor: Actor) => void;
+  select: (data: searchProps) => void;
 }
 
 interface CustomButtonProps {
@@ -162,8 +162,10 @@ const AutoComplete = ({
   select,
   value,
 }: CustomAutocompleteProps) => {
-  const handleClick = (data: Actor | Movie) => {
-    // select(data);
+  const handleClick = (data: searchProps) => {
+    if (data) {
+      select(data);
+    }
   };
   return (
     <div className="autocomplete">
@@ -185,7 +187,7 @@ const AutoComplete = ({
                 className="text-start"
                 onClick={() => handleClick(val)}
               >
-                {/* {`${val.firstName} ${val.lastName}`} */}
+                {val.name}
               </div>
             );
           })

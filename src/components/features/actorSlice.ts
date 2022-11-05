@@ -161,7 +161,7 @@ export const actorSlice = createSlice({
     });
 
     builder.addCase(deleteActor.rejected, (state, { payload }) => {
-      // if (payload) state.error = payload.message;
+      if (payload) state.error = payload;
       state.status = "idle";
     });
   },

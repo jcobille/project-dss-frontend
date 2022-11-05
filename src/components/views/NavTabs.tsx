@@ -7,7 +7,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Modal from "../popup/Modal";
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { CustomInput } from "./CustomInput";
 import { getCookie } from "../utils/cookie";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
@@ -53,7 +53,9 @@ const NavTabs = () => {
     <div>
       <div className={"navtab " + (location.pathname === "/" ? "home" : "")}>
         <div className="section p-4">
-          <span className="align-left">MovieViewer</span>
+          <Link to="/">
+            <span className="home-link align-left">MovieViewer</span>
+          </Link>
           <div className="align-right">
             <div className="text-center">
               <CustomInput
@@ -83,8 +85,8 @@ const NavTabs = () => {
                   <div
                     className={"dropdown-content " + (dropdown ? "show" : "")}
                   >
-                    {user.role === "admin" ? (
-                      <a href="/admin/dashboard">
+                    {user.role === "Admin" ? (
+                      <a href="/admin/movies">
                         <FontAwesomeIcon icon={faUserSecret} size="sm" />
                         <span> Admin Page</span>
                       </a>

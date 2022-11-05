@@ -47,3 +47,8 @@ export interface Review {
   status: boolean;
   movieId: string;
 }
+
+export interface searchProps {
+  id: string;
+  name: string;
+}

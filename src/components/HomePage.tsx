@@ -3,36 +3,43 @@ import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "./store/hooks";
 import MovieContainer from "./views/MovieContainer";
-import { getMovies } from "./features/movieSlice";
+import { getMovies, searchMovies } from "./features/movieSlice";
 import { AutoComplete } from "./views/CustomInput";
-import { Movie } from "../redux/types/ActionTypes";
+import { Movie, Movies, searchProps } from "../redux/types/ActionTypes";
+import { useNavigate } from "react-router-dom";
 export interface HomePageProps {}
+
 const HomePage = () => {
   const dispatch = useAppDispatch();
   const movieList = useAppSelector(({ movieList }) => movieList.movies);
-  const [moviesFound, setMoviesFound] = useState([]);
-  const [searchMovie, setSearchMovie] = useState('');
+  const [moviesFound, setMoviesFound] = useState<searchProps[]>([]);
+  const navigate = useNavigate();
 
-  const changeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const changeHandler = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const name = event.target.name;
     const value = event.target.value;
-    console.log(name,value);
     if (value) {
-      // dispatch(searchActors(value));
+      let list = await dispatch(searchMovies(value));
+      let movies = list.payload as Movies[];
+      let data: searchProps[] = [];
+      movies.map(({ id, title }) => {
+        if (id) {
+          data.push({ id, name: title });
+        }
+      });
+      setMoviesFound(data);
     } else {
-      // dispatch(clearActorsList());
+      setMoviesFound([]);
     }
   };
 
-  const selectAutocomplete = (data: Movie) => {
-    // setActor("");
-    // setSelectedActors([...selectedActors, data]);
-    // setActorList([]);
-    // dispatch(clearActorsList());
+  const selectAutocomplete = ({ id }: searchProps) => {
+    navigate(`/movie/details/${id}`);
   };
   useEffect(() => {
     dispatch(getMovies());
   }, [dispatch]);
+  
   return (
     <section>
       <div className="section">
@@ -43,7 +50,7 @@ const HomePage = () => {
           <div className="search-div">
             <div className="row">
               <div className="col">
-              {/* <input
+                {/* <input
                 type="text"
                 className="search-input input-lg"
                 placeholder="Enter keywords ..."
@@ -54,8 +61,7 @@ const HomePage = () => {
                   changeHandler={changeHandler}
                   data={moviesFound}
                   placeHolder="Enter keywords ..."
-
-                  // select={selectAutocomplete}
+                  select={selectAutocomplete}
                   // value={actor}
                 />
               </div>

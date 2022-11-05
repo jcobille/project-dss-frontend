@@ -25,9 +25,7 @@ export const createMovie = createAsyncThunk<
   Movie,
   { rejectValue: returnError }
 >("movie/create", async (payload, thunkAPI) => {
-  let data = {...payload, duration: Number(payload.duration)};
-
-  const response = await axiosCall("/movie", "POST", data);
+  const response = await axiosCall("/movie", "POST", payload);
   if (!response.status) {
     return thunkAPI.rejectWithValue({
       message: response.message,
@@ -91,6 +89,18 @@ export const getMovieDetails = createAsyncThunk<
     });
   }
   return response.data as Movie;
+});
+
+export const searchMovies = createAsyncThunk<
+  Movie[],
+  string,
+  { rejectValue: string }
+>("actor/details", async (payload, thunkAPI) => {
+  const response = await axiosCall(`/movies/${payload}`, "GET");
+  if (!response.status) {
+    return thunkAPI.rejectWithValue(response.message);
+  }
+  return response.data as Movie[];
 });
 
 export const movieSlice = createSlice({

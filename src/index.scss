@@ -802,14 +802,16 @@ textarea {
 .autocomplete-items div {
     padding: 10px;
     cursor: pointer;
-    background-color: grey;
+    background-color: #f1f1f1;
+    color:black;
     border-bottom: 1px solid #d4d4d4;
 }
 
-.autocomplete-items div:hover {
-    background-color: #f04f24;
-}
 
 .pointer {
     cursor: pointer;
+}
+
+.home-link {
+    color: white;
 }

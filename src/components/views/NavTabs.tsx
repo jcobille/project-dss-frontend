@@ -46,9 +46,7 @@ const NavTabs = () => {
 
   useEffect(() => {
     if (userToken) {
-      dispatch(currentAuthUser()).then((res) => {
-        console.log(res)
-      });
+      dispatch(currentAuthUser());
     }
   }, [userToken, dispatch]);
 
@@ -76,7 +74,6 @@ const NavTabs = () => {
 
   const userLogout = () => {
     logout();
-    window.location.reload();
     dispatch(clearCurrentUser());
   };
 
@@ -114,32 +111,35 @@ const NavTabs = () => {
               ) : (
                 <div className="dropdown">
                   <button
-                    className="full-width-button user ml-2"
-                    onClick={userButtonHandle}
+                    className="btn btn-secondary dropdown-toggle"
+                    type="button"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
                   >
-                    <span>{user.firstName} </span>
-                    <FontAwesomeIcon icon={faCaretDown} />
+                    {user.firstName}
                   </button>
-                  <div
-                    className={"dropdown-content " + (dropdown ? "show" : "")}
-                  >
-                    {user.role === "Admin" ? (
-                      <a href="/admin/movies">
-                        <FontAwesomeIcon icon={faUserSecret} size="sm" />
-                        <span> Admin Page</span>
-                      </a>
-                    ) : (
-                      ""
-                    )}
-                    <a href="/profile">
-                      <FontAwesomeIcon icon={faUserCircle} size="sm" />
-                      <span> Profile</span>
-                    </a>
-                    <a href="#" onClick={userLogout}>
-                      <FontAwesomeIcon icon={faRightFromBracket} size="sm" />
-                      <span> Logout</span>
-                    </a>
-                  </div>
+                  <ul className="dropdown-menu">
+                    <li>
+                      {user.role === "Admin" ? (
+                        <Link to="/admin/movies" className="dropdown-item">
+                          <FontAwesomeIcon icon={faUserSecret} size="sm" />
+                          <span> Admin Page</span>
+                        </Link>
+                      ) : (
+                        ""
+                      )}
+                    </li>
+                    <li>
+                      <Link
+                        to="/"
+                        onClick={userLogout}
+                        className="dropdown-item"
+                      >
+                        <FontAwesomeIcon icon={faRightFromBracket} size="sm" />
+                        <span> Logout</span>
+                      </Link>
+                    </li>
+                  </ul>
                 </div>
               )}
             </div>

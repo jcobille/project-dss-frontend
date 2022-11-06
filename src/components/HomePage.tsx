@@ -1,16 +1,40 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "./store/hooks";
 import MovieContainer from "./views/MovieContainer";
-import { getMovies } from "./features/movieSlice";
+import { getMovies, searchMovies } from "./features/movieSlice";
+import { AutoComplete } from "./views/CustomInput";
+import { Movie, Movies } from "../redux/types/ActionTypes";
+import { useNavigate } from "react-router-dom";
 export interface HomePageProps {}
+
 const HomePage = () => {
   const dispatch = useAppDispatch();
   const movieList = useAppSelector(({ movieList }) => movieList.movies);
+  const [moviesFound, setMoviesFound] = useState<Movie[]>([]);
+  const navigate = useNavigate();
+
+  const changeHandler = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const name = event.target.name;
+    const value = event.target.value;
+    if (value) {
+      let list = await dispatch(searchMovies(value));
+      let movies = list.payload as Movies[];
+      setMoviesFound(movies);
+    } else {
+      setMoviesFound([]);
+    }
+  };
+
+  const selectAutocomplete = ({ id }: Movie) => {
+    navigate(`/movie/details/${id}`);
+  };
+
   useEffect(() => {
     dispatch(getMovies());
   }, [dispatch]);
+
   return (
     <section>
       <div className="section">
@@ -21,10 +45,14 @@ const HomePage = () => {
           <div className="search-div">
             <div className="row">
               <div className="col">
-                <input
-                  type="text"
-                  className="search-input input-lg"
-                  placeholder="Enter keywords ..."
+                <AutoComplete
+                  className="search-input input-lg autocomplete"
+                  name="search"
+                  changeHandler={changeHandler}
+                  data={moviesFound}
+                  placeHolder="Enter keywords ..."
+                  selectMovie={selectAutocomplete}
+                  type="Movie"
                 />
               </div>
               <div className="col-1">
@@ -35,7 +63,7 @@ const HomePage = () => {
             </div>
           </div>
         </div>
-        <MovieContainer data={movieList} limit={16} />
+        <MovieContainer data={movieList} limit={32} />
       </div>
     </section>
   );

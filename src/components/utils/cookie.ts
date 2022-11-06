@@ -27,11 +27,6 @@ export const getCookie = () => {
   return "";
 };
 
-export const getUserId = () => {
-  return localStorage.getItem("userId");
-};
-
 export const logout = () => {
   setCookie("token", '', 0);
-  localStorage.removeItem("userId");
 };

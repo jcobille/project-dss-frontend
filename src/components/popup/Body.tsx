@@ -3,7 +3,7 @@ import {
   loginUser,
   clearErrorMessage,
   createUser,
-} from "../features/userSlice";
+} from "../features/currentUserSlice";
 import { useAppDispatch } from "../store/hooks";
 import { emailChecker } from "../utils/misc";
 import { CustomInput } from "../views/CustomInput";
@@ -20,7 +20,8 @@ interface LoginProps {
 }
 
 interface SignupProps {
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   password: string;
   confirmPassword: string;
@@ -34,7 +35,8 @@ const Body = ({ type, changeModal, closeModal }: BodyProps) => {
     password: "",
   });
   const [formRegisterData, setFormRegisterData] = useState<SignupProps>({
-    name: "",
+    firstName: "",
+    lastName: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -76,8 +78,10 @@ const Body = ({ type, changeModal, closeModal }: BodyProps) => {
     event: React.MouseEvent<HTMLButtonElement>
   ) => {
     event.preventDefault();
-    if (!formRegisterData.name) {
-      setError("Name is required");
+    if (!formRegisterData.firstName) {
+      setError("First name is required");
+    } else if (!formRegisterData.lastName) {
+      setError("Last name is required");
     } else if (!formRegisterData.email) {
       setError("Email is required");
     } else if (!formRegisterData.password) {
@@ -94,7 +98,8 @@ const Body = ({ type, changeModal, closeModal }: BodyProps) => {
       }
 
       let userDetails = {
-        name: formRegisterData.name,
+        firstName: formRegisterData.firstName,
+        lastName: formRegisterData.lastName,
         email: formRegisterData.email,
         password: formRegisterData.password,
       };
@@ -127,7 +132,6 @@ const Body = ({ type, changeModal, closeModal }: BodyProps) => {
               type="text"
               className="input"
               name="email"
-              value={formLoginData?.email}
               changeHandler={changeHandler}
             />
 
@@ -137,7 +141,6 @@ const Body = ({ type, changeModal, closeModal }: BodyProps) => {
                 type="password"
                 className="input"
                 name="password"
-                value={formLoginData?.password}
                 changeHandler={changeHandler}
               />
             </div>
@@ -179,7 +182,6 @@ const Body = ({ type, changeModal, closeModal }: BodyProps) => {
                 className="input"
                 name="name"
                 changeHandler={changeHandler}
-                value={formRegisterData.name}
               />
             </div>
 
@@ -190,7 +192,6 @@ const Body = ({ type, changeModal, closeModal }: BodyProps) => {
                 className="input"
                 name="email"
                 changeHandler={changeHandler}
-                value={formRegisterData.email}
               />
             </div>
 
@@ -201,7 +202,6 @@ const Body = ({ type, changeModal, closeModal }: BodyProps) => {
                 className="input"
                 name="password"
                 changeHandler={changeHandler}
-                value={formRegisterData.password}
               />
             </div>
 
@@ -212,7 +212,6 @@ const Body = ({ type, changeModal, closeModal }: BodyProps) => {
                 className="input"
                 changeHandler={changeHandler}
                 name="confirmPassword"
-                value={formRegisterData.confirmPassword}
               />
             </div>
           </div>

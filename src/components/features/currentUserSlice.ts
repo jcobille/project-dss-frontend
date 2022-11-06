@@ -15,18 +15,17 @@ const initialState: UserState = {
   error: null,
 };
 
-export const createUser = createAsyncThunk<
-  User,
-  { name: string; email: string; password: string },
-  { rejectValue: string }
->("user/create", async (payload, thunkAPI) => {
-  const response = await axiosCall("/signup", "POST", payload);
-  if (!response.status) {
-    return thunkAPI.rejectWithValue(response.message);
-  }
+export const createUser = createAsyncThunk<User, User, { rejectValue: string }>(
+  "user/create",
+  async (payload, thunkAPI) => {
+    const response = await axiosCall("/signup", "POST", payload);
+    if (!response.status) {
+      return thunkAPI.rejectWithValue(response.message);
+    }
 
-  return response.data as User;
-});
+    return response.data as User;
+  }
+);
 
 export const loginUser = createAsyncThunk<
   User,
@@ -38,7 +37,7 @@ export const loginUser = createAsyncThunk<
     return thunkAPI.rejectWithValue(response.message);
   }
 
-  setCookie("token", response.data.token, 7);
+  setCookie("token", response.data.token, 1);
   return response.data as User;
 });
 
@@ -55,12 +54,15 @@ export const currentAuthUser = createAsyncThunk<
   return response.data as User;
 });
 
-export const userSlice = createSlice({
-  name: "movie",
+export const currentUserSlice = createSlice({
+  name: "currentUser",
   initialState,
   reducers: {
     clearErrorMessage(state) {
       state.error = "";
+    },
+    clearCurrentUser(state) {
+      state.details = {};
     },
   },
   extraReducers: (builder) => {
@@ -108,5 +110,5 @@ export const userSlice = createSlice({
     });
   },
 });
-export const { clearErrorMessage } = userSlice.actions;
-export default userSlice.reducer;
+export const { clearErrorMessage, clearCurrentUser } = currentUserSlice.actions;
+export default currentUserSlice.reducer;

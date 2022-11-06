@@ -17,7 +17,7 @@ body {
 
 ::-webkit-scrollbar-thumb {
     border-radius: 10px;
-    background: #1f232c;
+    background: #5d5d5e;
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -84,14 +84,6 @@ body {
     font-size: 14px;
     color: #dddddd;
     letter-spacing: 1px;
-}
-
-.bordered-button {
-    border: none;
-    border-radius: 7px;
-    background-color: #fff;
-    cursor: pointer;
-    margin: 2px;
 }
 
 .btn-md {
@@ -172,10 +164,6 @@ body {
 
 .align-center {
     float: center;
-}
-
-.active {
-    background-color: #FFFFFF;
 }
 
 .box {
@@ -284,6 +272,11 @@ body {
     & .div-lg {
         min-height: 350px;
     }
+}
+
+.float-end {
+    float: right;
+    position: relative;
 }
 
 .btn-float-end {
@@ -403,6 +396,7 @@ body {
     background-color: #2b3342;
     border: none;
     min-width: 300px;
+    max-width: 600px;
     color: white;
 
     .custom-modal-header {
@@ -417,6 +411,8 @@ body {
         padding-right: 40px;
         text-align: center;
         min-height: 110px;
+        max-height: 570px;
+        overflow: auto;
     }
 
     .custom-modal-footer {
@@ -504,8 +500,7 @@ body {
 .input,
 select {
     width: 100%;
-    padding: 12px 20px;
-    margin: 8px 0;
+    padding: 7px 20px;
     display: inline-block;
     border-radius: 4px;
     box-sizing: border-box;
@@ -513,6 +508,16 @@ select {
 
 .input:focus {
     outline: none;
+}
+
+.input-comment {
+    width: 100%;
+    padding: 7px 10px;
+    outline: 0;
+    border-width: 0 0 2px;
+    border-color: white;
+    background-color: transparent;
+    color: white;
 }
 
 .search-input {
@@ -536,7 +541,10 @@ select {
 .search-input:focus {
     outline: none;
 }
-
+.danger{
+    color: red;
+    font-size: 10px;
+}
 .circle-button {
     background-color: #ee4e24;
     border: none;
@@ -545,6 +553,24 @@ select {
     min-width: 65px;
     color: white;
     cursor: pointer;
+}
+.btn-pill {
+    background-color: #f04f24;
+    color:white;
+    border:none;
+    border-radius: 50px;
+    min-height: 35px;
+    min-width: 90px;
+}
+
+.btn-pill:disabled {
+    background-color: #424A59;
+    color:#9599A0;
+}
+
+.btn-pill:hover:enabled{
+    background-color: #FF5A2E;
+    color: white
 }
 
 .btn-circle {
@@ -595,7 +621,7 @@ select {
     & .body {}
 }
 
-.container {
+.div-container {
     flex: 0 0 auto;
     width: 11.5%;
     padding: 5px;
@@ -661,9 +687,10 @@ select {
 }
 
 .error {
-    background-color: #f04f24;
-    border-radius: 10px;
-    height: 50px;
+    background-color: #F8D7DA;
+    border-radius: 5px;
+    height: 30px;
+    color: #9D1C24;
 }
 
 .dropdown {
@@ -760,15 +787,64 @@ select {
 }
 
 .nav-item>a:hover {
-    color: #f04f24;
+    color: #BFBFBF;
 }
 
 /*code to change background color*/
 a.nav-link.active {
-    background-color: #f04f24 !important;
+    background-color: white !important;
 }
 
 textarea {
     min-height: 160px;
     resize: none;
+}
+
+.autocomplete {
+    /*the container must be positioned relative:*/
+    position: relative;
+}
+
+.input-autocomplete {
+    border: 1px solid transparent;
+    background-color: #f1f1f1;
+}
+
+.autocomplete-items {
+    position: absolute;
+    border: 1px solid #d4d4d4;
+    border-bottom: none;
+    border-top: none;
+    z-index: 99;
+    /*position the autocomplete items to be the same width as the container:*/
+    top: 100%;
+    left: 0;
+    right: 0;
+}
+
+.disabled:hover {
+    background-color: grey;
+    border-bottom: 1px solid #d4d4d4;
+}
+
+.autocomplete-items div {
+    padding: 10px;
+    cursor: pointer;
+    background-color: #f1f1f1;
+    color: black;
+    border-bottom: 1px solid #d4d4d4;
+}
+
+
+.pointer {
+    cursor: pointer;
+}
+
+.link {
+    color: white;
+    text-decoration: none;
+}
+
+.border {
+    border: 1px solid white;
 }

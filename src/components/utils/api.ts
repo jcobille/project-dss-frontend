@@ -1,4 +1,4 @@
-import { getCookie, getUserId } from "./cookie";
+import { getCookie } from "./cookie";
 import axios from "axios";
 
 export const axiosCall = async (
@@ -30,11 +30,4 @@ export const axiosCall = async (
   returnedData = request.data;
 
   return returnedData;
-};
-
-export const checkLoggedUser = () => {
-  let token = getCookie();
-  let userId = getUserId();
-
-  return token && userId ? true : false;
 };

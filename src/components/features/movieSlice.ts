@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { Movie } from "../../redux/types/ActionTypes";
+import { Actor, Movie } from "../../redux/types/ActionTypes";
 import { axiosCall } from "../utils/api";
 
 type returnError = {
@@ -22,10 +22,26 @@ const initialState: MovieState = {
 
 export const createMovie = createAsyncThunk<
   Movie,
-  Movie,
+  {
+    title: string;
+    released_date: string;
+    duration: string;
+    image: string;
+    cost: string;
+    description: string;
+    actors: Actor[];
+  },
   { rejectValue: returnError }
 >("movie/create", async (payload, thunkAPI) => {
-  const response = await axiosCall("/movie", "POST", payload);
+  const actorsList = payload.actors;
+  const data = {
+    ...payload,
+    duration: Number(payload.duration),
+    actors: undefined,
+  };
+
+  const response = await axiosCall("/movie", "POST", data);
+  await axiosCall(`/movie/${response.id}/actors`, "POST", actorsList);
   if (!response.status) {
     return thunkAPI.rejectWithValue({
       message: response.message,
@@ -36,20 +52,30 @@ export const createMovie = createAsyncThunk<
 
 export const editMovie = createAsyncThunk<
   Movie,
-  { id: string; image: string; cost: string; description: string },
+  {
+    id: string;
+    image: string;
+    cost: string;
+    description: string;
+    actors: Actor[];
+  },
   { rejectValue: returnError }
 >("movie/edit", async (payload, thunkAPI) => {
-  const response = await axiosCall(`/movie/${payload.id}`, "PATCH", payload);
+  const actorsList = payload.actors;
+  const data = { ...payload, actors: undefined };
+  const response = await axiosCall(`/movie/${payload.id}`, "PATCH", data);
   if (!response.status) {
     return thunkAPI.rejectWithValue({
       message: response.message,
     });
+  } else {
+    await axiosCall(`/movie/${payload.id}/actors`, "POST", actorsList);
   }
   return payload as Movie;
 });
 
 export const deleteMovie = createAsyncThunk<
-  {id: string},
+  { id: string },
   string,
   { rejectValue: returnError }
 >("movie/delete", async (payload, thunkAPI) => {
@@ -59,7 +85,7 @@ export const deleteMovie = createAsyncThunk<
       message: response.message,
     });
   }
-  return {id: payload};
+  return { id: payload };
 });
 
 export const getMovies = createAsyncThunk<
@@ -89,6 +115,20 @@ export const getMovieDetails = createAsyncThunk<
     });
   }
   return response.data as Movie;
+});
+
+export const getActorMovies = createAsyncThunk<
+  Movie[],
+  string,
+  { rejectValue: returnError }
+>("actor/movies", async (id: string, thunkAPI) => {
+  const response = await axiosCall(`/actors/${id}/movies`, "GET");
+  if (!response.status) {
+    return thunkAPI.rejectWithValue({
+      message: response.message,
+    });
+  }
+  return response.data as Movie[];
 });
 
 export const searchMovies = createAsyncThunk<
@@ -147,7 +187,7 @@ export const movieSlice = createSlice({
     });
 
     builder.addCase(deleteMovie.fulfilled, (state, { payload }) => {
-      state.movies = state.movies.filter(({ id }) => id !== payload.id)
+      state.movies = state.movies.filter(({ id }) => id !== payload.id);
       state.status = "idle";
     });
 
@@ -155,7 +195,7 @@ export const movieSlice = createSlice({
       if (payload) state.error = payload.message;
       state.status = "idle";
     });
-    
+
     builder.addCase(getMovies.pending, (state) => {
       state.status = "loading";
       state.error = null;
@@ -182,6 +222,21 @@ export const movieSlice = createSlice({
     });
 
     builder.addCase(getMovieDetails.rejected, (state, { payload }) => {
+      if (payload) state.error = payload.message;
+      state.status = "idle";
+    });
+
+    builder.addCase(getActorMovies.pending, (state) => {
+      state.status = "loading";
+      state.error = null;
+    });
+
+    builder.addCase(getActorMovies.fulfilled, (state, { payload }) => {
+      state.movies = payload;
+      state.status = "idle";
+    });
+
+    builder.addCase(getActorMovies.rejected, (state, { payload }) => {
       if (payload) state.error = payload.message;
       state.status = "idle";
     });

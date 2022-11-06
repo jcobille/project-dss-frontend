@@ -1,7 +1,7 @@
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
-import { Movie } from "../../redux/types/ActionTypes";
+import { Movie, Movies } from "../../redux/types/ActionTypes";
 import { getMovies } from "../features/movieSlice";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import Table from "../views/Table";
@@ -11,11 +11,14 @@ import Modal from "../popup/Modal";
 export const MovieList = () => {
   const tableHeader = [
     { title: "Movie Title", key: "title" },
-    { title: "Description", key: "description" },
-    { title: "Released Date", key: "released_date" },
+    { title: "Duration (mins)", key: "duration" },
+    { title: "Year Released", key: "released_date" },
+    { title: "Budget Cost", key: "cost" },
+    { title: "Reviews", key: "newReviews" },
+    { title: "Rating Avg%", key: "reviews" },
     { title: "", key: "id" },
   ];
-  const buttonModalTypes = ['editMovie','deleteMovie'];
+  const buttonModalTypes = ["editMovie", "deleteMovie"];
   const [modal, setModal] = useState({
     id: "",
     type: "",
@@ -39,7 +42,7 @@ export const MovieList = () => {
   };
 
   const movieList = useAppSelector(
-    (state) => state.movieList.movies as Movie[]
+    (state) => state.movieList.movies as Movies[]
   );
   const dispatch = useAppDispatch();
 

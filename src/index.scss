@@ -86,14 +86,6 @@ body {
     letter-spacing: 1px;
 }
 
-.bordered-button {
-    border: none;
-    border-radius: 7px;
-    background-color: #fff;
-    cursor: pointer;
-    margin: 2px;
-}
-
 .btn-md {
     width: 150px;
     height: 35px;
@@ -280,6 +272,11 @@ body {
     & .div-lg {
         min-height: 350px;
     }
+}
+
+.float-end {
+    float: right;
+    position: relative;
 }
 
 .btn-float-end {
@@ -513,6 +510,16 @@ select {
     outline: none;
 }
 
+.input-comment {
+    width: 100%;
+    padding: 7px 10px;
+    outline: 0;
+    border-width: 0 0 2px;
+    border-color: white;
+    background-color: transparent;
+    color: white;
+}
+
 .search-input {
     border-radius: 50px;
     border: 0.5px;
@@ -534,7 +541,10 @@ select {
 .search-input:focus {
     outline: none;
 }
-
+.danger{
+    color: red;
+    font-size: 10px;
+}
 .circle-button {
     background-color: #ee4e24;
     border: none;
@@ -543,6 +553,24 @@ select {
     min-width: 65px;
     color: white;
     cursor: pointer;
+}
+.btn-pill {
+    background-color: #f04f24;
+    color:white;
+    border:none;
+    border-radius: 50px;
+    min-height: 35px;
+    min-width: 90px;
+}
+
+.btn-pill:disabled {
+    background-color: #424A59;
+    color:#9599A0;
+}
+
+.btn-pill:hover:enabled{
+    background-color: #FF5A2E;
+    color: white
 }
 
 .btn-circle {
@@ -759,7 +787,7 @@ select {
 }
 
 .nav-item>a:hover {
-    color: #f04f24;
+    color: #BFBFBF;
 }
 
 /*code to change background color*/
@@ -803,7 +831,7 @@ textarea {
     padding: 10px;
     cursor: pointer;
     background-color: #f1f1f1;
-    color:black;
+    color: black;
     border-bottom: 1px solid #d4d4d4;
 }
 
@@ -812,6 +840,11 @@ textarea {
     cursor: pointer;
 }
 
-.home-link {
+.link {
     color: white;
+    text-decoration: none;
+}
+
+.border {
+    border: 1px solid white;
 }

@@ -30,12 +30,24 @@ export const searchActors = createAsyncThunk<
   Actor[],
   string,
   { rejectValue: string }
->("actor/details", async (payload, thunkAPI) => {
+>("actors/", async (payload, thunkAPI) => {
   const response = await axiosCall(`/actor/${payload}`, "GET");
   if (!response.status) {
     return thunkAPI.rejectWithValue(response.message);
   }
   return response.data as Actor[];
+});
+
+export const searchActorById = createAsyncThunk<
+  Actor,
+  string,
+  { rejectValue: string }
+>("actor/details", async (payload, thunkAPI) => {
+  const response = await axiosCall(`/actor/details/${payload}`, "GET");
+  if (!response.status) {
+    return thunkAPI.rejectWithValue(response.message);
+  }
+  return response.data as Actor;
 });
 
 export const createActor = createAsyncThunk<
@@ -114,6 +126,22 @@ export const actorSlice = createSlice({
     });
 
     builder.addCase(searchActors.rejected, (state, { payload }) => {
+      if (payload) state.error = payload;
+      state.status = "idle";
+    });
+
+    builder.addCase(searchActorById.pending, (state) => {
+      state.status = "loading";
+      state.error = null;
+    });
+
+    builder.addCase(searchActorById.fulfilled, (state, { payload }) => {
+      state.actors = [];
+      state.actors.push(payload);
+      state.status = "idle";
+    });
+
+    builder.addCase(searchActorById.rejected, (state, { payload }) => {
       if (payload) state.error = payload;
       state.status = "idle";
     });

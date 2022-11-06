@@ -1,9 +1,16 @@
 import { faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { Actor, Movies, User } from "../../redux/types/ActionTypes";
-import { CustomButton } from "./CustomInput";
+import { Link } from "react-router-dom";
+import {
+  Actor,
+  Movie,
+  Movies,
+  Review,
+  User,
+} from "../../redux/types/ActionTypes";
+import { CustomButton, StarRatings } from "./CustomInput";
 
 interface RowProps {
-  data: Movies | Actor | User;
+  data: Movie | Actor | User;
   headers: {
     title: string;
     key: string;
@@ -18,6 +25,41 @@ const tableRow = ({
   changeModal,
   buttonModalTypes,
 }: RowProps) => {
+  let ratings = 0;
+  let newReviews = 0;
+  let isDeleteDisabled = false;
+
+  if (data["reviews" as keyof typeof data]) {
+    let reviews = data["reviews" as keyof typeof data];
+    if (reviews) {
+      let length = reviews?.length;
+      for (let index = 0; index < length; index++) {
+        if (
+          (reviews[index]["status" as keyof typeof reviews] as string) ===
+          "approved"
+        )
+          ratings +=
+            (reviews[index]["reviewScore" as keyof typeof reviews] as number) /
+            length;
+
+        if (
+          (reviews[index]["status" as keyof typeof reviews] as string) ===
+          "checking"
+        )
+          newReviews += 1;
+      }
+    }
+  }
+
+  if (data["released_date" as keyof typeof data]) {
+    let releasedDate = new Date(
+      data["released_date" as keyof typeof data] as string
+    );
+    let currentDate = new Date();
+    isDeleteDisabled =
+      (Number(currentDate) - Number(releasedDate)) / (1000 * 3600 * 24 * 365) >
+      1;
+  }
   return (
     <tr>
       {headers.map((header, i) => {
@@ -37,6 +79,34 @@ const tableRow = ({
                     ? "Active"
                     : "Inactive"}
                 </span>
+              </td>
+            );
+          } else if (header.key === "reviews") {
+            return (
+              <td className={i > 0 ? "centered" : ""} key={i}>
+                <StarRatings ratings={ratings} />
+              </td>
+            );
+          } else if (header.key === "newReviews") {
+            return (
+              <td className={i > 0 ? "centered" : ""} key={i}>
+                {newReviews === 1 && (
+                  <Link to={`/movie/details/${data.id}`}>
+                    <span className="pointer badge rounded-pill bg-success">
+                      {newReviews} New Review
+                    </span>
+                  </Link>
+                )}
+                {newReviews > 1 && (
+                  <span className="pointer badge rounded-pill">
+                    {newReviews} New Reviews
+                  </span>
+                )}
+                {newReviews === 0 && (
+                  <span className="badge rounded-pill bg-secondary">
+                    No New Review
+                  </span>
+                )}
               </td>
             );
           } else {
@@ -62,6 +132,7 @@ const tableRow = ({
                 dataId={data.id}
                 changeModal={changeModal}
                 icon={faTrash}
+                disabled={isDeleteDisabled}
               />
             </td>
           );

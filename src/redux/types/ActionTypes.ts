@@ -40,15 +40,11 @@ export interface Movies {
   cost: string;
 }
 export interface Review {
-  id: string;
-  userId: string;
+  id?: string;
+  userId?: string;
   reviewScore: number;
   description: string;
-  status: boolean;
-  movieId: string;
-}
-
-export interface searchProps {
-  id: string;
-  name: string;
+  status?: string;
+  movieId?: string;
+  posted_date?: string;
 }

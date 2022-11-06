@@ -1,12 +1,7 @@
 import { faClose, faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
-import {
-  Actor,
-  Movie,
-  Movies,
-  searchProps,
-} from "../../redux/types/ActionTypes";
+import { Actor, Movie, Movies } from "../../redux/types/ActionTypes";
 import { clearActorsList, searchActors } from "../features/actorSlice";
 import { createMovie, deleteMovie, editMovie } from "../features/movieSlice";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
@@ -48,8 +43,8 @@ export const MovieModalBody = ({
 
   const [actor, setActor] = useState("");
   const [error, setError] = useState("");
-  const [actorList, setActorList] = useState<searchProps[]>([]);
-  const [selectedActors, setSelectedActors] = useState<searchProps[]>([]);
+  const [actorList, setActorList] = useState<Actor[]>([]);
+  const [selectedActors, setSelectedActors] = useState<Actor[]>([]);
   const actors = useAppSelector((state) => state.actorList.actors as Actor[]);
   const movies = useAppSelector((state) => state.movieList.movies);
   const dispatch = useAppDispatch();
@@ -62,16 +57,9 @@ export const MovieModalBody = ({
   }
 
   const submitHandler = () => {
-    let selectedActorsId: string[] = [];
-    selectedActors.map((actor) => {
-      selectedActorsId.push(actor.id ?? "");
-      return;
-    });
-
     if (type === "addMovie") {
       let data = {
         ...formData,
-        actorIds: selectedActorsId,
         duration: formData.duration,
         cost: formData.cost,
       } as Movie;
@@ -84,6 +72,7 @@ export const MovieModalBody = ({
           cost: formData.cost,
           description: formData.description,
         };
+
         handleEdit(data);
       }
     } else {
@@ -121,7 +110,7 @@ export const MovieModalBody = ({
       return;
     }
 
-    dispatch(createMovie(data));
+    dispatch(createMovie({ ...data, actors: selectedActors }));
     closeModal(type);
   };
   const handleEdit = (data: MovieEdit) => {
@@ -137,7 +126,7 @@ export const MovieModalBody = ({
       return;
     }
 
-    dispatch(editMovie(data));
+    dispatch(editMovie({ ...data, actors: selectedActors }));
     closeModal(type);
   };
   const handleDelete = (id: string) => {
@@ -164,7 +153,7 @@ export const MovieModalBody = ({
     }
   };
 
-  const selectAutocomplete = (data: searchProps) => {
+  const selectAutocomplete = (data: Actor) => {
     setActor("");
     setSelectedActors([...selectedActors, data]);
     setActorList([]);
@@ -178,14 +167,11 @@ export const MovieModalBody = ({
   };
   useEffect(() => {
     if (actors.length > 0) {
-      const newActorList = actors.filter(
-        (actor) => !selectedActors.find((selected) => selected.id === actor.id)
-      );
-      const data: searchProps[] = [];
-      actors.map(({ id, firstName, lastName }) => {
-        if (!selectedActors.find((selected) => selected.id === id)) {
-          if (id) {
-            data.push({ id, name: `${firstName} ${lastName}` });
+      const data: Actor[] = [];
+      actors.map((actor) => {
+        if (!selectedActors.find((selected) => selected.id === actor.id)) {
+          if (actor.id) {
+            data.push(actor);
           }
         }
       });
@@ -198,6 +184,9 @@ export const MovieModalBody = ({
     let movie = movies.find((movie) => movie.id === movieId);
     if (movie) {
       setFormData(movie);
+    }
+    if (movie?.actors) {
+      setSelectedActors(movie.actors);
     }
   }, [movieId]);
   useEffect(() => {
@@ -296,9 +285,7 @@ export const MovieModalBody = ({
             </div>
           </div>
 
-          <div
-            className={"row my-1 " + (type === "addMovie" ? "" : "div-hidden")}
-          >
+          <div className={"row my-1"}>
             <div className="col-3 text-center">
               <label>Cast</label>
             </div>
@@ -310,7 +297,7 @@ export const MovieModalBody = ({
                     name="cast"
                     changeHandler={changeHandler}
                     data={actorList}
-                    select={selectAutocomplete}
+                    selectActor={selectAutocomplete}
                     value={actor}
                   />
                 </div>
@@ -325,7 +312,7 @@ export const MovieModalBody = ({
                     key={i}
                     className="badge rounded-pill bg-success mx-1"
                   >
-                    {actor.name} &nbsp;
+                    {actor.firstName} {actor.lastName}&nbsp;
                     <span
                       className="pointer"
                       onClick={() => (actor ? removeActor(actor.id ?? "") : {})}

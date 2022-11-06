@@ -5,14 +5,14 @@ import { useAppDispatch, useAppSelector } from "./store/hooks";
 import MovieContainer from "./views/MovieContainer";
 import { getMovies, searchMovies } from "./features/movieSlice";
 import { AutoComplete } from "./views/CustomInput";
-import { Movie, Movies, searchProps } from "../redux/types/ActionTypes";
+import { Movie, Movies } from "../redux/types/ActionTypes";
 import { useNavigate } from "react-router-dom";
 export interface HomePageProps {}
 
 const HomePage = () => {
   const dispatch = useAppDispatch();
   const movieList = useAppSelector(({ movieList }) => movieList.movies);
-  const [moviesFound, setMoviesFound] = useState<searchProps[]>([]);
+  const [moviesFound, setMoviesFound] = useState<Movie[]>([]);
   const navigate = useNavigate();
 
   const changeHandler = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -21,25 +21,20 @@ const HomePage = () => {
     if (value) {
       let list = await dispatch(searchMovies(value));
       let movies = list.payload as Movies[];
-      let data: searchProps[] = [];
-      movies.map(({ id, title }) => {
-        if (id) {
-          data.push({ id, name: title });
-        }
-      });
-      setMoviesFound(data);
+      setMoviesFound(movies);
     } else {
       setMoviesFound([]);
     }
   };
 
-  const selectAutocomplete = ({ id }: searchProps) => {
+  const selectAutocomplete = ({ id }: Movie) => {
     navigate(`/movie/details/${id}`);
   };
+
   useEffect(() => {
     dispatch(getMovies());
   }, [dispatch]);
-  
+
   return (
     <section>
       <div className="section">
@@ -50,19 +45,14 @@ const HomePage = () => {
           <div className="search-div">
             <div className="row">
               <div className="col">
-                {/* <input
-                type="text"
-                className="search-input input-lg"
-                placeholder="Enter keywords ..."
-              /> */}
                 <AutoComplete
                   className="search-input input-lg autocomplete"
-                  name="cast"
+                  name="search"
                   changeHandler={changeHandler}
                   data={moviesFound}
                   placeHolder="Enter keywords ..."
-                  select={selectAutocomplete}
-                  // value={actor}
+                  selectMovie={selectAutocomplete}
+                  type="Movie"
                 />
               </div>
               <div className="col-1">

@@ -5,6 +5,7 @@ import Body from "./Body";
 import { MovieModalBody } from "./MovieModalBody";
 import { ActorModalBody } from "./ActorModalBody";
 import { UserModalBody } from "./UserModalBody";
+import { ReviewModalBody } from "./ReviewModalBody";
 
 Modal.setAppElement("#root");
 interface ModalProps {
@@ -13,7 +14,7 @@ interface ModalProps {
   changeModal: (type: string) => void;
 }
 
-const App = ({ modal, closeModal, changeModal }: ModalProps) => {
+const CustomModal = ({ modal, closeModal, changeModal }: ModalProps) => {
   return (
     <div>
       <Modal
@@ -71,9 +72,19 @@ const App = ({ modal, closeModal, changeModal }: ModalProps) => {
             isOpen={modal.isOpen}
           />
         )}
+
+        {(modal.type === "approveReview" || modal.type === "declineReview") && (
+          <ReviewModalBody
+            reviewId={modal.id}
+            type={modal.type}
+            changeModal={changeModal}
+            closeModal={closeModal}
+            isOpen={modal.isOpen}
+          />
+        )}
       </Modal>
     </div>
   );
 };
 
-export default App;
+export default CustomModal;

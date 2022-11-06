@@ -1,6 +1,10 @@
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Actor, Movie, searchProps } from "../../redux/types/ActionTypes";
+import {
+  Actor,
+  Movie,
+} from "../../redux/types/ActionTypes";
 
 interface CustomInputProps {
   type: string;
@@ -43,10 +47,13 @@ interface CustomAutocompleteProps {
   name: string;
   className: string;
   placeHolder?: string;
-  data?: searchProps[];
+  data?: Actor[] | Movie[];
   value?: string;
+  type?: string;
+  hidden?: boolean;
   changeHandler?: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  select: (data: searchProps) => void;
+  selectMovie?: (data: Movie) => void;
+  selectActor?: (data: Actor) => void;
 }
 
 interface CustomButtonProps {
@@ -55,6 +62,7 @@ interface CustomButtonProps {
   modalType: string;
   className: string;
   changeModal: (type: string, id: string) => void;
+  disabled?: boolean;
 }
 
 interface CustomRadioButtonProps {
@@ -65,6 +73,10 @@ interface CustomRadioButtonProps {
   changeHandler: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
+interface StarRatingsProps {
+  ratings?: number;
+  changeHandler?: (rate: number) => void;
+}
 const CustomInput = ({
   type,
   name,
@@ -159,12 +171,19 @@ const AutoComplete = ({
   placeHolder,
   data,
   changeHandler,
-  select,
+  selectMovie,
+  selectActor,
   value,
+  type,
+  hidden,
 }: CustomAutocompleteProps) => {
-  const handleClick = (data: searchProps) => {
+  const handleClick = (data: Movie | Actor) => {
     if (data) {
-      select(data);
+      if (type === "Movie" && selectMovie) {
+        selectMovie(data as Movie);
+      } else if (type === "Actor" && selectActor) {
+        selectActor(data as Actor);
+      }
     }
   };
   return (
@@ -177,8 +196,9 @@ const AutoComplete = ({
         autoComplete="off"
         onChange={changeHandler}
         value={value}
+        hidden={hidden}
       />
-      <div className="autocomplete-items">
+      <div className="autocomplete-items" hidden={hidden}>
         {data?.length ? (
           data?.map((val, i) => {
             return (
@@ -187,12 +207,16 @@ const AutoComplete = ({
                 className="text-start"
                 onClick={() => handleClick(val)}
               >
-                {val.name}
+                {type !== "Movie" &&
+                  `${val["firstName" as keyof typeof val]} ${
+                    val["lastName" as keyof typeof val]
+                  }`}
+                {type === "Movie" && `${val["title" as keyof typeof val]}`}
               </div>
             );
           })
         ) : value ? (
-          <div className="text-start">Can't find the specified cast</div>
+          <div className="text-start">No results found</div>
         ) : (
           ""
         )}
@@ -207,11 +231,13 @@ const CustomButton = ({
   modalType,
   changeModal,
   className,
+  disabled = true,
 }: CustomButtonProps) => {
   return (
     <button
       className={className}
       onClick={() => changeModal(modalType, dataId)}
+      disabled={!disabled}
     >
       <FontAwesomeIcon icon={icon} />
     </button>
@@ -246,6 +272,40 @@ const CustomRadioButton = ({
   );
 };
 
+const StarRatings = ({ ratings, changeHandler }: StarRatingsProps) => {
+  return (
+    <span>
+      {[...Array(5)].map((_, i) => {
+        if (ratings && ratings > i) {
+          return (
+            <span
+              key={i}
+              className={changeHandler ? "pointer" : ""}
+              onMouseEnter={() => {
+                if (changeHandler) changeHandler(i);
+              }}
+            >
+              <FontAwesomeIcon icon={faStar} color="yellow" />
+            </span>
+          );
+        } else {
+          return (
+            <span
+              key={i}
+              className={changeHandler ? "pointer" : ""}
+              onMouseEnter={() => {
+                if (changeHandler) changeHandler(i);
+              }}
+            >
+              <FontAwesomeIcon icon={faStar} key={i} />
+            </span>
+          );
+        }
+      })}
+    </span>
+  );
+};
+
 export {
   CustomInput,
   CustomTextArea,
@@ -254,4 +314,5 @@ export {
   AutoComplete,
   CustomButton,
   CustomRadioButton,
+  StarRatings,
 };

@@ -28,5 +28,6 @@ export const getCookie = () => {
 };
 
 export const logout = () => {
-  setCookie("token", '', 0);
+  setCookie("token", "", 0);
+  document.location.replace("/");
 };

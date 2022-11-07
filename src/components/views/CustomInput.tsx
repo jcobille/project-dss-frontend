@@ -1,10 +1,7 @@
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  Actor,
-  Movie,
-} from "../../redux/types/ActionTypes";
+import { Actor, Movie } from "../../redux/types/ActionTypes";
 
 interface CustomInputProps {
   type: string;
@@ -207,7 +204,7 @@ const AutoComplete = ({
                 className="text-start"
                 onClick={() => handleClick(val)}
               >
-                {type !== "Movie" &&
+                {type === "Actor" &&
                   `${val["firstName" as keyof typeof val]} ${
                     val["lastName" as keyof typeof val]
                   }`}

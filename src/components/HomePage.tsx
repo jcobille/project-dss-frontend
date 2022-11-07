@@ -5,30 +5,44 @@ import { useAppDispatch, useAppSelector } from "./store/hooks";
 import MovieContainer from "./views/MovieContainer";
 import { getMovies, searchMovies } from "./features/movieSlice";
 import { AutoComplete } from "./views/CustomInput";
-import { Movie, Movies } from "../redux/types/ActionTypes";
+import { Actor, Movie, Movies } from "../redux/types/ActionTypes";
 import { useNavigate } from "react-router-dom";
+import { searchActors } from "./features/actorSlice";
 export interface HomePageProps {}
 
 const HomePage = () => {
   const dispatch = useAppDispatch();
   const movieList = useAppSelector(({ movieList }) => movieList.movies);
-  const [moviesFound, setMoviesFound] = useState<Movie[]>([]);
+  const [data, setData] = useState<Movie[] | Actor[]>([]);
   const navigate = useNavigate();
-
+  const [searchType, setSearchType] = useState("Movie");
   const changeHandler = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const name = event.target.name;
     const value = event.target.value;
     if (value) {
-      let list = await dispatch(searchMovies(value));
-      let movies = list.payload as Movies[];
-      setMoviesFound(movies);
+      let movieFound = await dispatch(searchMovies(value));
+      if (movieFound.payload && movieFound.payload.length > 0) {
+        let movies = movieFound.payload as Movies[];
+        setSearchType("Movie");
+        setData(movies);
+      } else {
+        let actorFound = await dispatch(searchActors(value));
+        if (actorFound.payload && actorFound.payload.length > 0) {
+          let actors = actorFound.payload as Actor[];
+          setSearchType("Actor");
+          setData(actors);
+        }
+      }
     } else {
-      setMoviesFound([]);
+      setData([]);
     }
   };
 
-  const selectAutocomplete = ({ id }: Movie) => {
+  const selectMovieAutocomplete = ({ id }: Movie) => {
     navigate(`/movie/details/${id}`);
+  };
+
+  const selectActorAutocomplete = ({ id }: Actor) => {
+    navigate(`/actor/details/${id}`);
   };
 
   useEffect(() => {
@@ -49,10 +63,11 @@ const HomePage = () => {
                   className="search-input input-lg autocomplete"
                   name="search"
                   changeHandler={changeHandler}
-                  data={moviesFound}
+                  data={data}
                   placeHolder="Enter keywords ..."
-                  selectMovie={selectAutocomplete}
-                  type="Movie"
+                  selectMovie={selectMovieAutocomplete}
+                  selectActor={selectActorAutocomplete}
+                  type={searchType}
                 />
               </div>
               <div className="col-1">

@@ -4,12 +4,20 @@ import { axiosCall } from "../utils/api";
 
 interface ActorState {
   actors: Actor[];
+  selectedActor: Actor;
   status: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
 }
 
 const initialState: ActorState = {
   actors: [],
+  selectedActor: {
+    firstName: "",
+    lastName: "",
+    age: "",
+    gender: "",
+    image: "",
+  },
   status: "idle",
   error: null,
 };
@@ -136,8 +144,7 @@ export const actorSlice = createSlice({
     });
 
     builder.addCase(searchActorById.fulfilled, (state, { payload }) => {
-      state.actors = [];
-      state.actors.push(payload);
+      state.selectedActor = payload;
       state.status = "idle";
     });
 

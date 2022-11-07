@@ -11,19 +11,20 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AutoComplete, CustomInput } from "./CustomInput";
 import { getCookie, logout } from "../utils/cookie";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
-import { Movie, Movies, User } from "../../redux/types/ActionTypes";
+import { Actor, Movie, Movies, User } from "../../redux/types/ActionTypes";
 import {
   clearCurrentUser,
   currentAuthUser,
 } from "../features/currentUserSlice";
 import { searchMovies } from "../features/movieSlice";
+import { searchActors } from "../features/actorSlice";
 const NavTabs = () => {
   const location = useLocation();
   const userToken = getCookie();
   const dispatch = useAppDispatch();
-  const [dropdown, setDropdown] = useState(false);
-  const [moviesFound, setMoviesFound] = useState<Movie[]>([]);
+  const [data, setData] = useState<Movie[] | Actor[]>([]);
   const [searchValue, setSearchValue] = useState("");
+  const [searchType, setSearchType] = useState("Movie");
   const navigate = useNavigate();
   const user = useAppSelector<User>(
     (state) => state.currentUser.details as User
@@ -53,23 +54,35 @@ const NavTabs = () => {
   const changeHandler = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     if (value) {
-      let list = await dispatch(searchMovies(value));
-      let movies = list.payload as Movies[];
-      setMoviesFound(movies);
-      setSearchValue(value);
+      let movieFound = await dispatch(searchMovies(value));
+      if (movieFound.payload && movieFound.payload.length > 0) {
+        let movies = movieFound.payload as Movies[];
+        setSearchType("Movie");
+        setData(movies);
+      } else {
+        let actorFound = await dispatch(searchActors(value));
+
+        if (actorFound.payload && actorFound.payload.length > 0) {
+          let actors = actorFound.payload as Actor[];
+          setSearchType("Actor");
+          setData(actors);
+        }
+      }
     } else {
-      setMoviesFound([]);
+      setData([]);
     }
+    setSearchValue(value);
   };
 
-  const selectAutocomplete = ({ id }: Movie) => {
+  const selectMovieAutocomplete = ({ id }: Movie) => {
     navigate(`/movie/details/${id}`);
-    setMoviesFound([]);
+    setData([]);
     setSearchValue("");
   };
 
-  const userButtonHandle = () => {
-    setDropdown(!dropdown);
+  const selectActorAutocomplete = ({ id }: Actor) => {
+    navigate(`/actor/details/${id}`);
+    setSearchValue("");
   };
 
   const userLogout = () => {
@@ -78,7 +91,7 @@ const NavTabs = () => {
   };
 
   useEffect(() => {
-    setMoviesFound([]);
+    setData([]);
     setSearchValue("");
   }, [location.pathname]);
   return (
@@ -95,15 +108,16 @@ const NavTabs = () => {
                 name="search"
                 hidden={location.pathname === "/"}
                 changeHandler={changeHandler}
-                data={moviesFound}
+                data={data}
                 placeHolder="Enter keywords ..."
-                selectMovie={selectAutocomplete}
-                type="Movie"
+                selectMovie={selectMovieAutocomplete}
+                selectActor={selectActorAutocomplete}
+                type={searchType}
                 value={searchValue}
               />
               {!userToken ? (
                 <button
-                  className="ml-3 bordered-button btn-md"
+                  className="ml-3 btn btn-outline btn-md"
                   onClick={() => openCloseModal("login")}
                 >
                   <FontAwesomeIcon icon={faUserCircle} /> Member Login
@@ -130,14 +144,13 @@ const NavTabs = () => {
                       )}
                     </li>
                     <li>
-                      <Link
-                        to="/"
+                      <span
                         onClick={userLogout}
-                        className="dropdown-item"
+                        className="dropdown-item pointer"
                       >
                         <FontAwesomeIcon icon={faRightFromBracket} size="sm" />
                         <span> Logout</span>
-                      </Link>
+                      </span>
                     </li>
                   </ul>
                 </div>

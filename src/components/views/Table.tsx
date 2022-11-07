@@ -18,10 +18,9 @@ const Table = ({
   tableType,
   minRow,
   changeModal,
-  buttonModalTypes
+  buttonModalTypes,
 }: TableProps) => {
   const length = data.length < minRow ? minRow : data.length;
-
   return (
     <>
       <table className="table table-dark">
@@ -44,6 +43,7 @@ const Table = ({
               return (
                 <TableRow
                   key={i}
+                  tableType={tableType}
                   data={data[i]}
                   headers={headers}
                   changeModal={changeModal}

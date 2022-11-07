@@ -1,12 +1,6 @@
 import { faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
-import {
-  Actor,
-  Movie,
-  Movies,
-  Review,
-  User,
-} from "../../redux/types/ActionTypes";
+import { Actor, Movie, User } from "../../redux/types/ActionTypes";
 import { CustomButton, StarRatings } from "./CustomInput";
 
 interface RowProps {
@@ -17,6 +11,7 @@ interface RowProps {
   }[];
   changeModal: (type: string, id?: string) => void;
   buttonModalTypes: string[];
+  tableType: string;
 }
 
 const tableRow = ({
@@ -24,10 +19,11 @@ const tableRow = ({
   headers,
   changeModal,
   buttonModalTypes,
+  tableType,
 }: RowProps) => {
   let ratings = 0;
   let newReviews = 0;
-  let isDeleteDisabled = false;
+  let isDeleteDisabled = tableType !== "user" ? false : true;
 
   if (data["reviews" as keyof typeof data]) {
     let reviews = data["reviews" as keyof typeof data];
@@ -59,6 +55,10 @@ const tableRow = ({
     isDeleteDisabled =
       (Number(currentDate) - Number(releasedDate)) / (1000 * 3600 * 24 * 365) >
       1;
+  }
+
+  if (data["movies" as keyof typeof data]) {
+    isDeleteDisabled = data["movies" as keyof typeof data]?.length === 0;
   }
   return (
     <tr>

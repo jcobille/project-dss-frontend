@@ -53,7 +53,7 @@ const Body = ({ type, changeModal, closeModal }: BodyProps) => {
     }
   };
 
-  const submitLoginHandler = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const submitLoginHandler = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!formLoginData.email) {
       setError("Email is required");
@@ -74,9 +74,7 @@ const Body = ({ type, changeModal, closeModal }: BodyProps) => {
     }
   };
 
-  const submitRegisterHandler = (
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => {
+  const submitRegisterHandler = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!formRegisterData.firstName) {
       setError("First name is required");
@@ -90,6 +88,8 @@ const Body = ({ type, changeModal, closeModal }: BodyProps) => {
       if (!emailChecker(formRegisterData.email)) {
         setError("Email is invalid");
         return;
+      } else if (formRegisterData.password.length < 6) {
+        setError("Password is fewer than 6 characters");
       } else if (
         formRegisterData.password !== formRegisterData.confirmPassword
       ) {
@@ -126,34 +126,32 @@ const Body = ({ type, changeModal, closeModal }: BodyProps) => {
 
         <div className="custom-modal-body">
           {error ? <div className="error text-center">{error}</div> : ""}
-          <div className="form-input text-start">
-            <label className="form-label">EMAIL</label>
-            <CustomInput
-              type="text"
-              className="input"
-              name="email"
-              changeHandler={changeHandler}
-            />
-
-            <label className="form-label">PASSWORD</label>
-            <div>
+          <form onSubmit={submitLoginHandler}>
+            <div className="form-input text-start">
+              <label className="form-label">EMAIL</label>
               <CustomInput
-                type="password"
+                type="text"
                 className="input"
-                name="password"
+                name="email"
                 changeHandler={changeHandler}
               />
+
+              <label className="form-label">PASSWORD</label>
+              <div>
+                <CustomInput
+                  type="password"
+                  className="input"
+                  name="password"
+                  changeHandler={changeHandler}
+                />
+              </div>
             </div>
-          </div>
-          <div className="form-input text-start">
-            <button
-              type="submit"
-              className="custom-btn full-width-button"
-              onClick={submitLoginHandler}
-            >
-              Login
-            </button>
-          </div>
+            <div className="form-input text-start">
+              <button type="submit" className="custom-btn full-width-button">
+                Login
+              </button>
+            </div>
+          </form>
         </div>
         <div className="custom-modal-footer">
           Don't have an account?&nbsp;
@@ -174,55 +172,64 @@ const Body = ({ type, changeModal, closeModal }: BodyProps) => {
         </div>
         <div className="custom-modal-body">
           {error ? <div className="error text-center">{error}</div> : ""}
-          <div className="form-input text-start">
-            <div>
-              <label className="form-label">YOUR NAME</label>
-              <CustomInput
-                type="text"
-                className="input"
-                name="name"
-                changeHandler={changeHandler}
-              />
-            </div>
+          <form onSubmit={submitRegisterHandler}>
+            <div className="form-input text-start">
+              <div>
+                <label className="form-label">FIRST NAME</label>
+                <CustomInput
+                  type="text"
+                  className="input"
+                  name="firstName"
+                  changeHandler={changeHandler}
+                />
+              </div>
 
-            <div>
-              <label className="form-label">EMAIL</label>
-              <CustomInput
-                type="text"
-                className="input"
-                name="email"
-                changeHandler={changeHandler}
-              />
-            </div>
+              <div>
+                <label className="form-label">LAST NAME</label>
+                <CustomInput
+                  type="text"
+                  className="input"
+                  name="lastName"
+                  changeHandler={changeHandler}
+                />
+              </div>
 
-            <div>
-              <label className="form-label">PASSWORD</label>
-              <CustomInput
-                type="password"
-                className="input"
-                name="password"
-                changeHandler={changeHandler}
-              />
-            </div>
+              <div>
+                <label className="form-label">EMAIL</label>
+                <CustomInput
+                  type="text"
+                  className="input"
+                  name="email"
+                  changeHandler={changeHandler}
+                />
+              </div>
 
-            <div>
-              <label className="form-label">CONFIRM PASSWORD</label>
-              <CustomInput
-                type="password"
-                className="input"
-                changeHandler={changeHandler}
-                name="confirmPassword"
-              />
+              <div>
+                <label className="form-label">PASSWORD</label>
+                <CustomInput
+                  type="password"
+                  className="input"
+                  name="password"
+                  changeHandler={changeHandler}
+                />
+              </div>
+
+              <div>
+                <label className="form-label">CONFIRM PASSWORD</label>
+                <CustomInput
+                  type="password"
+                  className="input"
+                  changeHandler={changeHandler}
+                  name="confirmPassword"
+                />
+              </div>
             </div>
-          </div>
-          <div className="form-input text-start">
-            <button
-              className="custom-btn full-width-button"
-              onClick={submitRegisterHandler}
-            >
-              Register
-            </button>
-          </div>
+            <div className="form-input text-start">
+              <button className="custom-btn full-width-button" type="submit">
+                Register
+              </button>
+            </div>
+          </form>
         </div>
         <div className="custom-modal-footer">
           Have an account?&nbsp;

@@ -50,7 +50,6 @@ const DetailsPage = () => {
   useEffect(() => {
     if (id) {
       if (Object.keys(details).length === 0 || details.id !== id) {
-        
         dispatch(getMovieDetails(id));
       }
     }
@@ -82,8 +81,8 @@ const DetailsPage = () => {
       });
 
       setRatings(ratings / details.reviews.length);
-    }else{
-      setRatings(ratings)
+    } else {
+      setRatings(ratings);
     }
   };
 
@@ -152,7 +151,7 @@ const DetailsPage = () => {
               <span className="title">Reviews</span>
             </div>
           </div>
-          {!reviewFound && <ReviewInput />}
+          {!reviewFound && currentUser.id && <ReviewInput />}
           {reviews.map((review, i) => {
             if (currentUser.role !== "Admin") {
               return (

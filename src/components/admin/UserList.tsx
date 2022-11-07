@@ -70,7 +70,7 @@ export const UserList = () => {
             headers={tableHeader}
             data={UserList}
             minRow={15}
-            tableType="movies"
+            tableType="user"
             changeModal={changeModal}
             buttonModalTypes={buttonModalTypes}
           />

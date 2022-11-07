@@ -299,6 +299,7 @@ export const MovieModalBody = ({
                     data={actorList}
                     selectActor={selectAutocomplete}
                     value={actor}
+                    type="Actor"
                   />
                 </div>
               </div>
